@@ -30,7 +30,7 @@ export default function Home() {
       longDesc: [
         "We create visually stunning websites that perfectly represent your brand and business objectives.",
         "All our websites are fully responsive, ensuring an optimal experience across all devices and screen sizes.",
-        "We focus on intuitive navigation and user experience to maximize engagement and conversion rates.",
+        "We focus on intuitive navigation and user experience to maximise engagement and conversion rates.",
         "Our designs incorporate modern aesthetics with timeless principles for an enduring digital presence."
       ],
       techStack: ["HTML5", "CSS3/SASS", "JavaScript", "React", "Next.js", "Tailwind CSS"]
@@ -40,7 +40,7 @@ export default function Home() {
       desc: "Boost your visibility and reach more customers online.",
       longDesc: [
         "We conduct thorough keyword research to identify the most valuable search terms for your business.",
-        "Our technical SEO expertise ensures your website is fully optimized for search engine crawlers.",
+        "Our technical SEO expertise ensures your website is fully optimised for search engine crawlers.",
         "We implement on-page SEO strategies that enhance your content's relevance and authority.",
         "Our ongoing analysis provides insights to continuously improve your search performance and visibility."
       ],
@@ -52,7 +52,7 @@ export default function Home() {
       longDesc: [
         "We build tailored e-commerce platforms that showcase your products in the most compelling way.",
         "Our secure payment integration solutions ensure customer transactions are protected and streamlined.",
-        "We implement inventory management systems that simplify stock control and order fulfillment.",
+        "We implement inventory management systems that simplify stock control and order fulfilment.",
         "Our e-commerce solutions are designed for scalability, growing alongside your business."
       ],
       techStack: ["Shopify", "WooCommerce", "Stripe", "PayPal", "Next.js Commerce", "Sanity"]
@@ -72,9 +72,9 @@ export default function Home() {
       title: "UI/UX Design", 
       desc: "Intuitive interfaces that enhance user experience.",
       longDesc: [
-        "We create user-centered designs that prioritize ease of use and accessibility.",
+        "We create user-centred designs that prioritise ease of use and accessibility.",
         "Our interactive wireframes and prototypes allow for testing and refinement before development.",
-        "We implement data-driven design decisions based on user research and behavior analysis.",
+        "We implement data-driven design decisions based on user research and behaviour analysis.",
         "Our designs maintain visual consistency while guiding users intuitively through their journey."
       ],
       techStack: ["Figma", "Adobe XD", "User Research", "Interaction Design", "User Testing"]
@@ -84,7 +84,7 @@ export default function Home() {
       desc: "Ensure your digital presence works perfectly on all devices.",
       longDesc: [
         "We implement mobile-first design principles to ensure optimal performance on smartphones and tablets.",
-        "Our optimization techniques focus on speed and performance for users on mobile networks.",
+        "Our optimisation techniques focus on speed and performance for users on mobile networks.",
         "We design touch-friendly interfaces with appropriate element sizing and spacing for mobile interaction.",
         "We conduct extensive cross-device testing to ensure consistent experiences across all platforms."
       ],
@@ -310,9 +310,16 @@ export default function Home() {
                   </div>
                 </div>
                 
+                <div className="hidden">
+                  <div className="font-mono text-xs text-green-500">
+                    <pre>{typedText}</pre>
+                    <span className={showCursor ? 'opacity-100' : 'opacity-0'}>_</span>
+                  </div>
+                </div>
+                
                 <div className="mt-8 flex justify-center">
                   <motion.a 
-                    href="mailto:contact@joefergraphy.co.uk" 
+                    href="/contact" 
                     className="px-6 py-2.5 border border-white rounded-full text-sm font-light hover:bg-white hover:text-black transition-colors inline-flex items-center"
                     whileHover={{ 
                       scale: 1.03,
@@ -503,7 +510,7 @@ export default function Home() {
               Ready to transform your digital presence?
             </motion.h2>
             <motion.a 
-              href="mailto:contact@joefergraphy.co.uk" 
+              href="/contact" 
               className="px-6 sm:px-8 py-2.5 sm:py-3 border border-white rounded-full text-base sm:text-lg font-light hover:bg-white hover:text-black transition-colors inline-flex items-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
