@@ -70,8 +70,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-black text-white overflow-hidden relative">
-      {/* Vertical scroll progress indicator */}
-      <div className="fixed left-0 top-0 bottom-0 w-1 bg-white/10 z-50">
+      {/* Vertical scroll progress indicator - only on mobile */}
+      <div className="fixed left-0 top-0 bottom-0 w-1 bg-white/10 z-50 md:hidden">
         <div 
           className="bg-white w-full transition-all duration-200 ease-out"
           style={{ height: `${scrollProgress * 100}%` }}
