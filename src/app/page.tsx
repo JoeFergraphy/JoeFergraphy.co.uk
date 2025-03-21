@@ -6,156 +6,39 @@ export default function Home() {
   const sectionRefs = useRef<HTMLDivElement[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const isScrollingTimeout = useRef<NodeJS.Timeout | null>(null);
-  const isManualScrolling = useRef(false);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    // Initial load animation
+    // Initial load animation for Joefergraphy only
     const timer = setTimeout(() => {
       setIsLoaded(true);
     }, 100);
 
-    // Initialize each section with the correct starting state
-    const initializeSections = () => {
-      sectionRefs.current.forEach((section, index) => {
-        if (!section) return;
-        
-        if (index === 0) {
-          // First section is visible by default
-          section.style.opacity = "1";
-          section.style.transform = "translateY(0)";
-        } else {
-          // Other sections start hidden and translated down
-          section.style.opacity = "0";
-          section.style.transform = "translateY(60px)";
-          section.style.transition = "opacity 0.8s ease-out, transform 0.8s ease-out";
-        }
-      });
-    };
-
-    // Call initialization once refs are set
-    setTimeout(initializeSections, 100);
-
     const handleScroll = () => {
-      // Show scrolling indicators
-      setIsScrolling(true);
-      
-      // Calculate scroll direction
-      const scrollDirection = window.scrollY > lastScrollY.current ? 'down' : 'up';
-      lastScrollY.current = window.scrollY;
-      
-      // Clear any existing timeout
-      if (isScrollingTimeout.current) {
-        clearTimeout(isScrollingTimeout.current);
-      }
-      
-      // Set a timeout to hide the numbers after scrolling stops
-      isScrollingTimeout.current = setTimeout(() => {
-        setIsScrolling(false);
-      }, 1500);
-
-      // Skip if manual scrolling is in progress
-      if (isManualScrolling.current) return;
-      
-      // Determine which section is active
+      // Determine which section is active based on scroll position
       let currentSection = 0;
       sectionRefs.current.forEach((section, index) => {
         if (!section) return;
         
         const rect = section.getBoundingClientRect();
-        // More generous "in view" detection - triggers fade-ups earlier
-        const isInView = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.4;
-        
-        if (isInView) {
+        // Simple check if section is in view
+        if (rect.top < window.innerHeight * 0.6 && rect.bottom > 0) {
           currentSection = index;
-          section.style.opacity = "1";
-          section.style.transform = "translateY(0)";
-          section.style.transition = "opacity 0.8s ease-out, transform 0.8s ease-out";
-        } else {
-          // Make section visible as it approaches viewport
-          const distanceFromViewport = rect.top - window.innerHeight;
-          
-          if (distanceFromViewport < window.innerHeight * 0.7 && rect.top > 0) {
-            // Section is approaching from below - start making it visible with a nice fade-up
-            // Increased fade-up distance for more responsive animations
-            const fadeUpProgress = 1 - (distanceFromViewport / (window.innerHeight * 0.7));
-            const opacity = Math.max(0, fadeUpProgress);
-            const translateY = Math.max(0, 60 * (1 - fadeUpProgress));
-            
-            // Adjust animation speed based on scroll direction
-            const transitionDuration = scrollDirection === 'down' ? '0.4s' : '0.6s';
-            
-            section.style.opacity = opacity.toString();
-            section.style.transform = `translateY(${translateY}px)`;
-            section.style.transition = `opacity ${transitionDuration} ease-out, transform ${transitionDuration} ease-out`;
-          } else if (rect.bottom < 0 && rect.bottom > -window.innerHeight * 0.3) {
-            // Section is leaving viewport at the top - fade it out gradually
-            const opacity = Math.max(0, 1 - (Math.abs(rect.bottom) / (window.innerHeight * 0.3)));
-            
-            section.style.opacity = opacity.toString();
-            section.style.transform = "translateY(0)";
-            section.style.transition = "opacity 0.5s ease-in, transform 0.5s ease-in";
-          } else if (rect.top > window.innerHeight) {
-            // Reset sections that are completely below the viewport
-            section.style.opacity = "0";
-            section.style.transform = "translateY(60px)";
-            // Faster transition for reset
-            section.style.transition = "opacity 0.2s, transform 0.2s";
-          }
         }
       });
-      
-      // If active section has changed, temporarily show the indicator
-      if (currentSection !== activeSection) {
-        setIsScrolling(true);
-        
-        // Clear any existing timeout for hiding indicators
-        if (isScrollingTimeout.current) {
-          clearTimeout(isScrollingTimeout.current);
-        }
-        
-        // Set a new timeout to hide numbers after a few seconds
-        isScrollingTimeout.current = setTimeout(() => {
-          setIsScrolling(false);
-        }, 2500);
-      }
       
       setActiveSection(currentSection);
     };
 
-    // Basic wheel event handler for indicators only, no scroll prevention
-    const handleWheel = () => {
-      // Show scrolling indicators when wheel event happens
-      setIsScrolling(true);
-      
-      // Clear any existing timeout for hiding indicators
-      if (isScrollingTimeout.current) {
-        clearTimeout(isScrollingTimeout.current);
-      }
-      
-      // Set timeout to hide indicators after scrolling stops
-      isScrollingTimeout.current = setTimeout(() => {
-        setIsScrolling(false);
-      }, 2500);
-    };
-
     window.addEventListener("scroll", handleScroll);
-    window.addEventListener("wheel", handleWheel, { passive: true });
     
-    // Force an initial scroll event to set proper section visibility
+    // Force an initial scroll event to set proper section
     window.dispatchEvent(new Event('scroll'));
     
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("wheel", handleWheel);
-      if (isScrollingTimeout.current) {
-        clearTimeout(isScrollingTimeout.current);
-      }
       clearTimeout(timer);
     };
-  }, [activeSection]);
+  }, []);
 
   const addToRefs = (index: number) => (el: HTMLDivElement | null) => {
     if (el && !sectionRefs.current.includes(el)) {
@@ -165,8 +48,6 @@ export default function Home() {
 
   const scrollToSection = (index: number) => {
     if (sectionRefs.current[index]) {
-      isManualScrolling.current = true;
-      
       // Use a simple smooth scroll
       window.scrollTo({
         top: sectionRefs.current[index].offsetTop,
@@ -175,54 +56,29 @@ export default function Home() {
       
       // Update active section
       setActiveSection(index);
-      
-      // Reset scroll flag after animation
-      setTimeout(() => {
-        isManualScrolling.current = false;
-      }, 800);
     }
   };
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-black text-white overflow-hidden relative">
-      {/* Section indicators */}
+      {/* Section indicators - simplified */}
       <div className="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50 hidden md:block">
         {[0, 1, 2, 3].map((index) => (
           <div 
             key={index}
             className="flex items-center my-4 cursor-pointer group"
-            onClick={() => {
-              scrollToSection(index);
-              
-              // Show indicators when manually changing sections
-              setIsScrolling(true);
-              
-              // Hide indicators after a few seconds of inactivity
-              if (isScrollingTimeout.current) {
-                clearTimeout(isScrollingTimeout.current);
-              }
-              
-              isScrollingTimeout.current = setTimeout(() => {
-                setIsScrolling(false);
-              }, 2500);
-            }}
+            onClick={() => scrollToSection(index)}
           >
             <div className="w-6 h-6 flex items-center justify-center">
               <div 
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`w-2 h-2 rounded-full ${
                   activeSection === index 
                     ? 'w-3 h-3 bg-white' 
                     : 'bg-white/50 group-hover:bg-white/80'
                 }`}
               ></div>
             </div>
-            <span 
-              className={`ml-2 text-xs font-light transition-all duration-300 ${
-                (activeSection === index || isScrolling) 
-                  ? 'opacity-100' 
-                  : 'opacity-0 group-hover:opacity-70'
-              }`}
-            >
+            <span className="ml-2 text-xs font-light">
               {index + 1}
             </span>
           </div>
@@ -251,7 +107,6 @@ export default function Home() {
         <div 
           ref={addToRefs(1)}
           className="min-h-screen w-full flex items-center justify-center px-4 py-12"
-          style={{ opacity: 0, transform: 'translateY(60px)', transition: 'opacity 0.8s ease-out, transform 0.8s ease-out' }}
         >
           <div className="max-w-3xl text-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-6 md:mb-8">
@@ -298,7 +153,6 @@ export default function Home() {
         <div 
           ref={addToRefs(2)}
           className="min-h-screen w-full flex items-center justify-center px-4"
-          style={{ opacity: 0, transform: 'translateY(60px)', transition: 'opacity 0.8s ease-out, transform 0.8s ease-out' }}
         >
           <div className="flex flex-col items-center">
             <h2 className="text-2xl sm:text-3xl font-light mb-8 md:mb-10 text-center">
@@ -334,7 +188,6 @@ export default function Home() {
         <div 
           ref={addToRefs(3)}
           className="min-h-screen w-full flex items-center justify-center px-4"
-          style={{ opacity: 0, transform: 'translateY(60px)', transition: 'opacity 0.8s ease-out, transform 0.8s ease-out' }}
         >
           <div className="flex flex-col items-center text-center">
             <h2 className="text-2xl sm:text-3xl font-light mb-6 md:mb-8">
