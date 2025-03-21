@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 export default function Home() {
   const sectionRefs = useRef<HTMLDivElement[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
 
   useEffect(() => {
     // Initial load animation
@@ -15,13 +16,16 @@ export default function Home() {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       
-      sectionRefs.current.forEach((section) => {
+      // Determine which section is active
+      let currentSection = 0;
+      sectionRefs.current.forEach((section, index) => {
         if (!section) return;
         
         const rect = section.getBoundingClientRect();
-        const isInView = rect.top < window.innerHeight * 0.75 && rect.bottom > 0;
+        const isInView = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
         
         if (isInView) {
+          currentSection = index;
           section.style.opacity = "1";
           section.style.transform = "translateY(0)";
         } else {
@@ -32,6 +36,8 @@ export default function Home() {
           }
         }
       });
+      
+      setActiveSection(currentSection);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -41,16 +47,58 @@ export default function Home() {
     };
   }, []);
 
-  const addToRefs = (el: HTMLDivElement) => {
+  const addToRefs = (index: number) => (el: HTMLDivElement | null) => {
     if (el && !sectionRefs.current.includes(el)) {
-      sectionRefs.current.push(el);
+      sectionRefs.current[index] = el;
+    }
+  };
+
+  const scrollToSection = (index: number) => {
+    if (sectionRefs.current[index]) {
+      window.scrollTo({
+        top: sectionRefs.current[index].offsetTop,
+        behavior: 'smooth'
+      });
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-black text-white overflow-hidden">
+    <div className="flex flex-col min-h-screen w-full bg-black text-white overflow-hidden relative">
+      {/* Section indicators */}
+      <div className="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50 hidden md:block">
+        {[0, 1, 2, 3].map((index) => (
+          <div 
+            key={index}
+            className="flex items-center my-4 cursor-pointer group"
+            onClick={() => scrollToSection(index)}
+          >
+            <div className="w-6 h-6 flex items-center justify-center">
+              <div 
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  activeSection === index 
+                    ? 'w-3 h-3 bg-white' 
+                    : 'bg-white/50 group-hover:bg-white/80'
+                }`}
+              ></div>
+            </div>
+            <span 
+              className={`ml-2 text-xs font-light transition-all duration-300 ${
+                activeSection === index 
+                  ? 'opacity-100' 
+                  : 'opacity-0 group-hover:opacity-70'
+              }`}
+            >
+              {index + 1}
+            </span>
+          </div>
+        ))}
+      </div>
+
       <main className="flex-grow flex flex-col items-center">
-        <div className="h-screen w-full flex flex-col items-center justify-center px-4">
+        <div 
+          ref={addToRefs(0)}
+          className="h-screen w-full flex flex-col items-center justify-center px-4"
+        >
           <h1 
             className={`text-5xl sm:text-6xl md:text-8xl font-bold tracking-tight transition-all duration-1500 ease-in-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} 
             style={{ fontFamily: 'var(--font-playfair)', transitionDelay: '300ms' }}
@@ -66,21 +114,63 @@ export default function Home() {
         </div>
         
         <div 
-          ref={addToRefs}
-          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000 px-4"
+          ref={addToRefs(1)}
+          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000 px-4 py-12"
         >
-          <div className="max-w-2xl text-center">
+          <div className="max-w-3xl text-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-6 md:mb-8">
-              Custom Web Based Solutions
+              Custom Web-Based Solutions
             </h2>
-            <p className="text-base sm:text-lg md:text-xl font-light leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl font-light leading-relaxed mb-10">
               For your business needs.
             </p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 mt-8">
+              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-3">Website Design</h3>
+                <p className="text-sm text-white/80">Responsive, modern websites that captivate your audience.</p>
+              </div>
+              
+              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-3">Search Engine Optimisation</h3>
+                <p className="text-sm text-white/80">Boost your visibility and reach more customers online.</p>
+              </div>
+              
+              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-3">E-commerce Solutions</h3>
+                <p className="text-sm text-white/80">Custom online shops with secure payment processing.</p>
+              </div>
+              
+              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-3">Web Applications</h3>
+                <p className="text-sm text-white/80">Tailored applications that solve specific business challenges.</p>
+              </div>
+              
+              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-3">iOS App Development</h3>
+                <p className="text-sm text-white/80">Native iOS applications for Apple devices.</p>
+              </div>
+              
+              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-3">Android App Development</h3>
+                <p className="text-sm text-white/80">Custom Android applications for the Google ecosystem.</p>
+              </div>
+              
+              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-3">UI/UX Design</h3>
+                <p className="text-sm text-white/80">Intuitive interfaces that enhance user experience.</p>
+              </div>
+              
+              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-3">Mobile Optimisation</h3>
+                <p className="text-sm text-white/80">Ensure your digital presence works perfectly on all devices.</p>
+              </div>
+            </div>
           </div>
         </div>
         
         <div 
-          ref={addToRefs}
+          ref={addToRefs(2)}
           className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000 px-4"
         >
           <div className="flex flex-col items-center">
@@ -93,7 +183,7 @@ export default function Home() {
                   TwoStopper
                 </h3>
                 <p className="font-light mb-5 md:mb-6 text-sm sm:text-base">
-                  Personalized SMS solution for consumers using public transport.
+                  Personalised SMS solution for consumers using public transport.
                 </p>
                 <a href="https://twostopper.co.uk/" target="_blank" rel="noopener noreferrer" className="px-5 sm:px-6 py-2 border border-white rounded-full text-sm font-light hover:bg-white hover:text-black transition-colors">
                   Visit website
@@ -104,7 +194,7 @@ export default function Home() {
                   Alertmove
                 </h3>
                 <p className="font-light mb-5 md:mb-6 text-sm sm:text-base">
-                  Advanced property alert system designed to streamline real estate transactions.
+                  Advanced property alert system designed to streamline property transactions.
                 </p>
                 <span className="px-5 sm:px-6 py-2 border border-gray-600 rounded-full text-sm font-light text-gray-400 cursor-not-allowed">
                   Under Development
@@ -115,7 +205,7 @@ export default function Home() {
         </div>
         
         <div 
-          ref={addToRefs}
+          ref={addToRefs(3)}
           className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000 px-4"
         >
           <div className="flex flex-col items-center text-center">
