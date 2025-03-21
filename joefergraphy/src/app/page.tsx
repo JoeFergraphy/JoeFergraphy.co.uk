@@ -35,25 +35,12 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen w-full bg-black text-white">
       <main className="flex-grow flex flex-col items-center">
-        <div className="h-screen w-full flex items-center justify-center">
-          <h1 className="text-6xl md:text-8xl font-light tracking-tight">
-            JOEFERGRAPHY
+        <div className="h-screen w-full flex flex-col items-center justify-center">
+          <h1 className="text-6xl md:text-8xl tracking-tight font-playfair">
+            Joefergraphy
           </h1>
-        </div>
-        
-        <div 
-          ref={addToRefs}
-          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000"
-        >
-          <h2 className="text-4xl md:text-5xl font-light">Photography Portfolio</h2>
-        </div>
-        
-        <div 
-          ref={addToRefs}
-          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000"
-        >
-          <p className="text-xl md:text-2xl font-light max-w-md text-center">
-            Capturing moments through a unique lens. Scroll to explore.
+          <p className="text-xl md:text-2xl font-light tracking-wide mt-2">
+            LIMITED
           </p>
         </div>
         
@@ -61,10 +48,51 @@ export default function Home() {
           ref={addToRefs}
           className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000"
         >
+          <div className="max-w-2xl text-center">
+            <h2 className="text-4xl md:text-5xl font-light mb-8">Custom Web Based Solutions</h2>
+            <p className="text-xl font-light leading-relaxed">
+              For your business needs.
+            </p>
+          </div>
+        </div>
+        
+        <div 
+          ref={addToRefs}
+          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000"
+        >
           <div className="flex flex-col items-center">
-            <p className="text-xl font-light mb-8">Get in touch</p>
+            <h2 className="text-3xl font-light mb-10">Our Bespoke Platforms</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-4xl">
+              <div className="text-center">
+                <h3 className="text-2xl font-light mb-4">TwoStopper</h3>
+                <p className="font-light mb-6">
+                  Custom transport web application for efficient logistics management.
+                </p>
+                <a href="https://twostopper.co.uk/" target="_blank" rel="noopener noreferrer" className="px-6 py-2 border border-white rounded-full text-sm font-light hover:bg-white hover:text-black transition-colors">
+                  Visit website
+                </a>
+              </div>
+              <div className="text-center">
+                <h3 className="text-2xl font-light mb-4">Alertmove</h3>
+                <p className="font-light mb-6">
+                  Advanced property alert system designed to streamline real estate transactions.
+                </p>
+                <span className="px-6 py-2 border border-gray-600 rounded-full text-sm font-light text-gray-400 cursor-not-allowed">
+                  Under Development
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          ref={addToRefs}
+          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000"
+        >
+          <div className="flex flex-col items-center">
+            <h2 className="text-3xl font-light mb-8">Ready to transform your digital presence?</h2>
             <button className="px-8 py-3 border border-white rounded-full text-lg font-light hover:bg-white hover:text-black transition-colors">
-              Contact
+              Get in touch
             </button>
           </div>
         </div>

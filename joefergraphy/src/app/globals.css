@@ -11,6 +11,7 @@
   --color-foreground: var(--foreground);
   --font-sans: 'Helvetica', sans-serif;
   --font-mono: 'Helvetica', sans-serif;
+  --font-artistic: var(--font-playfair);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,4 +36,4 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300; /* Apple uses light font weights */
   letter-spacing: -0.03em; /* Tighter kerning like Apple */
-}
+} 
