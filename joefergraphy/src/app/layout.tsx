@@ -5,12 +5,13 @@ import "./globals.css";
 const playfair = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
+  weight: ['400', '500', '600', '700', '800'],
   variable: "--font-playfair",
 });
 
 export const metadata: Metadata = {
-  title: "JOEFERGRAPHY",
-  description: "Photography portfolio",
+  title: "Joefergraphy Limited",
+  description: "Custom web development solutions",
 };
 
 export default function RootLayout({
