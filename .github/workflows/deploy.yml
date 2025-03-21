@@ -46,6 +46,9 @@ jobs:
       - name: Create .nojekyll file
         run: touch out/.nojekyll
       
+      - name: Copy CNAME file
+        run: cp CNAME out/ || echo "No CNAME file found"
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
