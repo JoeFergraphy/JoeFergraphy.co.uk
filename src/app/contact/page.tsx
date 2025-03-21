@@ -73,7 +73,7 @@ export default function ContactForm() {
         >
           <h1 className="text-3xl md:text-4xl font-light mb-6 md:mb-8">Get in touch</h1>
           <p className="text-white/80 mb-8">
-            Tell us about your project, and we'll get back to you as soon as possible.
+            Tell us about your project, and we&apos;ll get back to you as soon as possible.
           </p>
           
           {submitStatus === 'success' ? (
@@ -84,7 +84,7 @@ export default function ContactForm() {
             >
               <FiCheck className="text-green-400 mx-auto mb-4 text-3xl" />
               <h3 className="text-xl font-light mb-2">Message sent!</h3>
-              <p className="text-white/80 mb-6">Thank you for contacting us. We'll be in touch shortly.</p>
+              <p className="text-white/80 mb-6">Thank you for contacting us. We&apos;ll be in touch shortly.</p>
               <button 
                 onClick={() => setSubmitStatus(null)}
                 className="px-5 py-2 border border-white/30 rounded-full text-sm hover:bg-white/10 transition-colors"
