@@ -16,6 +16,22 @@ export const metadata: Metadata = {
   authors: [{ name: "Joefergraphy Limited" }],
   creator: "Joefergraphy Limited",
   publisher: "Joefergraphy Limited",
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '120x120', type: 'image/png' },
+      { url: '/favicon/apple-touch-icon-152x152.png', sizes: '152x152', type: 'image/png' },
+      { url: '/favicon/apple-touch-icon-180x180.png', sizes: '180x180', type: 'image/png' },
+    ],
+    other: [
+      { url: '/favicon/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+  },
   openGraph: {
     title: "Joefergraphy Limited | Custom Web Development Solutions",
     description: "Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.",
@@ -56,12 +72,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-      </head>
       <body className={`antialiased ${playfair.variable}`}>
         {children}
       </body>
