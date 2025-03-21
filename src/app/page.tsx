@@ -307,7 +307,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-4xl">
               <div className="text-center">
                 <h3 className="text-xl sm:text-2xl font-light mb-3 md:mb-4">
-                  TwoStopper
+                  Two Stopper
                 </h3>
                 <p className="font-light mb-5 md:mb-6 text-sm sm:text-base">
                   Personalised SMS solution for consumers using public transport.
