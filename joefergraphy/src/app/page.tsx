@@ -6,6 +6,10 @@ export default function Home() {
   const sectionRefs = useRef<HTMLDivElement[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const isScrollingTimeout = useRef<NodeJS.Timeout | null>(null);
+  const isManualScrolling = useRef(false);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     // Initial load animation
@@ -14,7 +18,25 @@ export default function Home() {
     }, 100);
 
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
+      // Show scrolling indicators
+      setIsScrolling(true);
+      
+      // Calculate scroll direction
+      const scrollDirection = window.scrollY > lastScrollY.current ? 'down' : 'up';
+      lastScrollY.current = window.scrollY;
+      
+      // Clear any existing timeout
+      if (isScrollingTimeout.current) {
+        clearTimeout(isScrollingTimeout.current);
+      }
+      
+      // Set a timeout to hide the numbers after scrolling stops
+      isScrollingTimeout.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 1500);
+
+      // Skip if manual scrolling is in progress
+      if (isManualScrolling.current) return;
       
       // Determine which section is active
       let currentSection = 0;
@@ -28,24 +50,90 @@ export default function Home() {
           currentSection = index;
           section.style.opacity = "1";
           section.style.transform = "translateY(0)";
+          section.style.transition = "opacity 0.8s ease-out, transform 0.8s ease-out";
         } else {
-          // Reset animation when out of view for reappearing on next scroll
-          if (rect.top > window.innerHeight) {
+          // Make section visible as it approaches viewport
+          const distanceFromViewport = rect.top - window.innerHeight;
+          
+          if (distanceFromViewport < window.innerHeight * 0.5 && rect.top > 0) {
+            // Section is approaching from below - start making it visible with a nice fade-up
+            const fadeUpProgress = 1 - (distanceFromViewport / (window.innerHeight * 0.5));
+            const opacity = Math.max(0, fadeUpProgress);
+            const translateY = Math.max(0, 60 * (1 - fadeUpProgress));
+            
+            // Adjust animation speed based on scroll direction
+            const transitionDuration = scrollDirection === 'down' ? '0.4s' : '0.6s';
+            
+            section.style.opacity = opacity.toString();
+            section.style.transform = `translateY(${translateY}px)`;
+            section.style.transition = `opacity ${transitionDuration} ease-out, transform ${transitionDuration} ease-out`;
+          } else if (rect.bottom < 0 && rect.bottom > -window.innerHeight * 0.5) {
+            // Section is leaving viewport at the top - fade it out gradually
+            const opacity = Math.max(0, 1 - (Math.abs(rect.bottom) / (window.innerHeight * 0.3)));
+            
+            section.style.opacity = opacity.toString();
+            section.style.transform = "translateY(0)";
+            section.style.transition = "opacity 0.5s ease-in, transform 0.5s ease-in";
+          } else if (rect.top > window.innerHeight) {
+            // Reset sections that are completely below the viewport
             section.style.opacity = "0";
-            section.style.transform = "translateY(40px)";
+            section.style.transform = "translateY(60px)";
+            section.style.transition = "opacity 0.1s, transform 0.1s";
           }
         }
       });
       
+      // If active section has changed, temporarily show the indicator
+      if (currentSection !== activeSection) {
+        setIsScrolling(true);
+        
+        // Clear any existing timeout for hiding indicators
+        if (isScrollingTimeout.current) {
+          clearTimeout(isScrollingTimeout.current);
+        }
+        
+        // Set a new timeout to hide numbers after a few seconds
+        isScrollingTimeout.current = setTimeout(() => {
+          setIsScrolling(false);
+        }, 2500);
+      }
+      
       setActiveSection(currentSection);
     };
 
+    // Basic wheel event handler for indicators only, no scroll prevention
+    const handleWheel = () => {
+      // Show scrolling indicators when wheel event happens
+      setIsScrolling(true);
+      
+      // Clear any existing timeout for hiding indicators
+      if (isScrollingTimeout.current) {
+        clearTimeout(isScrollingTimeout.current);
+      }
+      
+      // Set timeout to hide indicators after scrolling stops
+      isScrollingTimeout.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 2500);
+    };
+
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    
+    // Trigger initial handle scroll to ensure sections are visible
+    setTimeout(() => {
+      handleScroll();
+    }, 200);
+    
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", handleWheel);
+      if (isScrollingTimeout.current) {
+        clearTimeout(isScrollingTimeout.current);
+      }
       clearTimeout(timer);
     };
-  }, []);
+  }, [activeSection]);
 
   const addToRefs = (index: number) => (el: HTMLDivElement | null) => {
     if (el && !sectionRefs.current.includes(el)) {
@@ -55,10 +143,21 @@ export default function Home() {
 
   const scrollToSection = (index: number) => {
     if (sectionRefs.current[index]) {
+      isManualScrolling.current = true;
+      
+      // Use a simple smooth scroll
       window.scrollTo({
         top: sectionRefs.current[index].offsetTop,
         behavior: 'smooth'
       });
+      
+      // Update active section
+      setActiveSection(index);
+      
+      // Reset scroll flag after animation
+      setTimeout(() => {
+        isManualScrolling.current = false;
+      }, 800);
     }
   };
 
@@ -70,7 +169,21 @@ export default function Home() {
           <div 
             key={index}
             className="flex items-center my-4 cursor-pointer group"
-            onClick={() => scrollToSection(index)}
+            onClick={() => {
+              scrollToSection(index);
+              
+              // Show indicators when manually changing sections
+              setIsScrolling(true);
+              
+              // Hide indicators after a few seconds of inactivity
+              if (isScrollingTimeout.current) {
+                clearTimeout(isScrollingTimeout.current);
+              }
+              
+              isScrollingTimeout.current = setTimeout(() => {
+                setIsScrolling(false);
+              }, 2500);
+            }}
           >
             <div className="w-6 h-6 flex items-center justify-center">
               <div 
@@ -83,7 +196,7 @@ export default function Home() {
             </div>
             <span 
               className={`ml-2 text-xs font-light transition-all duration-300 ${
-                activeSection === index 
+                (activeSection === index || isScrolling) 
                   ? 'opacity-100' 
                   : 'opacity-0 group-hover:opacity-70'
               }`}
@@ -115,7 +228,8 @@ export default function Home() {
         
         <div 
           ref={addToRefs(1)}
-          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000 px-4 py-12"
+          className="min-h-screen w-full flex items-center justify-center px-4 py-12"
+          style={{ opacity: 0, transform: 'translateY(60px)' }}
         >
           <div className="max-w-3xl text-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-6 md:mb-8">
@@ -125,44 +239,34 @@ export default function Home() {
               For your business needs.
             </p>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 mt-8">
-              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-lg md:text-xl font-light mb-3">Website Design</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mt-8">
+              <div className="p-3 sm:p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-2 sm:mb-3">Website Design</h3>
                 <p className="text-sm text-white/80">Responsive, modern websites that captivate your audience.</p>
               </div>
               
-              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-lg md:text-xl font-light mb-3">Search Engine Optimisation</h3>
+              <div className="p-3 sm:p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-2 sm:mb-3">Search Engine Optimisation</h3>
                 <p className="text-sm text-white/80">Boost your visibility and reach more customers online.</p>
               </div>
               
-              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-lg md:text-xl font-light mb-3">E-commerce Solutions</h3>
+              <div className="p-3 sm:p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-2 sm:mb-3">E-commerce Solutions</h3>
                 <p className="text-sm text-white/80">Custom online shops with secure payment processing.</p>
               </div>
               
-              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-lg md:text-xl font-light mb-3">Web Applications</h3>
+              <div className="p-3 sm:p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-2 sm:mb-3">Web Applications</h3>
                 <p className="text-sm text-white/80">Tailored applications that solve specific business challenges.</p>
               </div>
               
-              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-lg md:text-xl font-light mb-3">iOS App Development</h3>
-                <p className="text-sm text-white/80">Native iOS applications for Apple devices.</p>
-              </div>
-              
-              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-lg md:text-xl font-light mb-3">Android App Development</h3>
-                <p className="text-sm text-white/80">Custom Android applications for the Google ecosystem.</p>
-              </div>
-              
-              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-lg md:text-xl font-light mb-3">UI/UX Design</h3>
+              <div className="p-3 sm:p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-2 sm:mb-3">UI/UX Design</h3>
                 <p className="text-sm text-white/80">Intuitive interfaces that enhance user experience.</p>
               </div>
               
-              <div className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-lg md:text-xl font-light mb-3">Mobile Optimisation</h3>
+              <div className="p-3 sm:p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-lg md:text-xl font-light mb-2 sm:mb-3">Mobile Optimisation</h3>
                 <p className="text-sm text-white/80">Ensure your digital presence works perfectly on all devices.</p>
               </div>
             </div>
@@ -171,7 +275,8 @@ export default function Home() {
         
         <div 
           ref={addToRefs(2)}
-          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000 px-4"
+          className="min-h-screen w-full flex items-center justify-center px-4"
+          style={{ opacity: 0, transform: 'translateY(60px)' }}
         >
           <div className="flex flex-col items-center">
             <h2 className="text-2xl sm:text-3xl font-light mb-8 md:mb-10 text-center">
@@ -206,7 +311,8 @@ export default function Home() {
         
         <div 
           ref={addToRefs(3)}
-          className="min-h-screen w-full flex items-center justify-center opacity-0 transform translate-y-10 transition-all duration-1000 px-4"
+          className="min-h-screen w-full flex items-center justify-center px-4"
+          style={{ opacity: 0, transform: 'translateY(60px)' }}
         >
           <div className="flex flex-col items-center text-center">
             <h2 className="text-2xl sm:text-3xl font-light mb-6 md:mb-8">
