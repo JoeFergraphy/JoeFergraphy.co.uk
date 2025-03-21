@@ -442,7 +442,18 @@ export default function Home() {
             >
               Our Bespoke Platforms
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-4xl">
+            
+            {/* Consumer Solutions Section */}
+            <motion.h3
+              className="text-xl font-light mb-6 text-white/80"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+            >
+              Consumer Solutions
+            </motion.h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-4xl mb-12">
               <motion.div 
                 className="text-center"
                 initial={{ opacity: 0, x: -30 }}
@@ -482,6 +493,36 @@ export default function Home() {
                 </h3>
                 <p className="font-light mb-5 md:mb-6 text-sm sm:text-base">
                   Advanced property alert system designed to streamline property transactions.
+                </p>
+                <span className="px-5 sm:px-6 py-2 border border-gray-600 rounded-full text-sm font-light text-gray-400 cursor-not-allowed inline-block">
+                  Under Development
+                </span>
+              </motion.div>
+            </div>
+            
+            {/* SaaS Solutions Section */}
+            <motion.h3
+              className="text-xl font-light mb-6 text-white/80"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+            >
+              SaaS Solutions
+            </motion.h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-4xl">
+              <motion.div 
+                className="text-center"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.6 }}
+              >
+                <h3 className="text-xl sm:text-2xl font-light mb-3 md:mb-4">
+                  OpenResource
+                </h3>
+                <p className="font-light mb-5 md:mb-6 text-sm sm:text-base">
+                  3D organisational modelling tool for optimising resource allocation and management.
                 </p>
                 <span className="px-5 sm:px-6 py-2 border border-gray-600 rounded-full text-sm font-light text-gray-400 cursor-not-allowed inline-block">
                   Under Development
