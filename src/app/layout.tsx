@@ -57,9 +57,20 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
+  metadataBase: new URL('https://joefergraphy.co.uk'),
   themeColor: "#000000",
   viewport: "width=device-width, initial-scale=1",
+  verification: {
+    google: 'verification_token',  // Replace with your actual verification token when available
+  },
   alternates: {
     canonical: "https://joefergraphy.co.uk",
   },
