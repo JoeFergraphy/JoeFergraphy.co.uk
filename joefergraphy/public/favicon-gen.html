@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Favicon Generator</title>
+</head>
+<body>
+  <h1>Favicon Generator</h1>
+  <p>This file helps create favicon PNG files. Open in browser and right-click on each canvas to save the image.</p>
+
+  <h2>Favicon (32x32)</h2>
+  <canvas id="favicon" width="32" height="32"></canvas>
+
+  <h2>Apple Touch Icon (180x180)</h2>
+  <canvas id="apple-touch-icon" width="180" height="180"></canvas>
+
+  <h2>Android Chrome (192x192)</h2>
+  <canvas id="android-192" width="192" height="192"></canvas>
+
+  <h2>Android Chrome (512x512)</h2>
+  <canvas id="android-512" width="512" height="512"></canvas>
+
+  <script>
+    // Function to draw favicon to canvas
+    function drawFavicon(canvas, size) {
+      const ctx = canvas.getContext('2d');
+      
+      // Black background
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, size, size, size * 0.125);
+      ctx.fill();
+      
+      // Scale factor based on canvas size
+      const scale = size / 32;
+      
+      // Draw "J" with serifs
+      // Top serif cap
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(size * 0.265, size * 0.35);
+      ctx.lineTo(size * 0.41, size * 0.35);
+      ctx.lineTo(size * 0.43, size * 0.35);
+      ctx.lineTo(size * 0.43, size * 0.32);
+      ctx.lineTo(size * 0.41, size * 0.30);
+      ctx.lineTo(size * 0.265, size * 0.30);
+      ctx.lineTo(size * 0.245, size * 0.32);
+      ctx.lineTo(size * 0.245, size * 0.35);
+      ctx.closePath();
+      ctx.fill();
+      
+      // J stem
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5 * scale;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      
+      ctx.beginPath();
+      ctx.moveTo(size * 0.41, size * 0.35);
+      ctx.lineTo(size * 0.41, size * 0.60);
+      ctx.quadraticCurveTo(size * 0.41, size * 0.645, size * 0.375, size * 0.675);
+      ctx.quadraticCurveTo(size * 0.345, size * 0.705, size * 0.28, size * 0.705);
+      ctx.lineTo(size * 0.22, size * 0.675);
+      ctx.stroke();
+      
+      // J bottom serif
+      ctx.lineWidth = 1 * scale;
+      ctx.beginPath();
+      ctx.moveTo(size * 0.345, size * 0.675);
+      ctx.lineTo(size * 0.28, size * 0.715);
+      ctx.lineTo(size * 0.22, size * 0.695);
+      ctx.stroke();
+      
+      // Draw "F" with serifs as filled shape
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      // Top cap
+      ctx.moveTo(size * 0.53, size * 0.30);
+      ctx.lineTo(size * 0.56, size * 0.30);
+      // Top horizontal
+      ctx.lineTo(size * 0.56, size * 0.35);
+      ctx.lineTo(size * 0.75, size * 0.35);
+      ctx.lineTo(size * 0.75, size * 0.38);
+      ctx.lineTo(size * 0.73, size * 0.40);
+      ctx.lineTo(size * 0.56, size * 0.40);
+      // Middle horizontal
+      ctx.lineTo(size * 0.56, size * 0.495);
+      ctx.lineTo(size * 0.69, size * 0.495);
+      ctx.lineTo(size * 0.69, size * 0.525);
+      ctx.lineTo(size * 0.67, size * 0.545);
+      ctx.lineTo(size * 0.56, size * 0.545);
+      // Vertical stem
+      ctx.lineTo(size * 0.56, size * 0.69);
+      ctx.lineTo(size * 0.53, size * 0.69);
+      ctx.closePath();
+      ctx.fill();
+      
+      // F left serifs
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 0.75 * scale;
+      ctx.beginPath();
+      ctx.moveTo(size * 0.5, size * 0.35);
+      ctx.lineTo(size * 0.53, size * 0.35);
+      ctx.moveTo(size * 0.5, size * 0.52);
+      ctx.lineTo(size * 0.53, size * 0.52);
+      ctx.stroke();
+    }
+
+    // Draw favicon on each canvas
+    drawFavicon(document.getElementById('favicon'), 32);
+    drawFavicon(document.getElementById('apple-touch-icon'), 180);
+    drawFavicon(document.getElementById('android-192'), 192);
+    drawFavicon(document.getElementById('android-512'), 512);
+  </script>
+</body>
+</html> 

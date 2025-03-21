@@ -17,6 +17,27 @@ export default function Home() {
       setIsLoaded(true);
     }, 100);
 
+    // Initialize each section with the correct starting state
+    const initializeSections = () => {
+      sectionRefs.current.forEach((section, index) => {
+        if (!section) return;
+        
+        if (index === 0) {
+          // First section is visible by default
+          section.style.opacity = "1";
+          section.style.transform = "translateY(0)";
+        } else {
+          // Other sections start hidden and translated down
+          section.style.opacity = "0";
+          section.style.transform = "translateY(60px)";
+          section.style.transition = "opacity 0.8s ease-out, transform 0.8s ease-out";
+        }
+      });
+    };
+
+    // Call initialization once refs are set
+    setTimeout(initializeSections, 100);
+
     const handleScroll = () => {
       // Show scrolling indicators
       setIsScrolling(true);
@@ -44,7 +65,8 @@ export default function Home() {
         if (!section) return;
         
         const rect = section.getBoundingClientRect();
-        const isInView = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
+        // More generous "in view" detection - triggers fade-ups earlier
+        const isInView = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.4;
         
         if (isInView) {
           currentSection = index;
@@ -55,9 +77,10 @@ export default function Home() {
           // Make section visible as it approaches viewport
           const distanceFromViewport = rect.top - window.innerHeight;
           
-          if (distanceFromViewport < window.innerHeight * 0.5 && rect.top > 0) {
+          if (distanceFromViewport < window.innerHeight * 0.7 && rect.top > 0) {
             // Section is approaching from below - start making it visible with a nice fade-up
-            const fadeUpProgress = 1 - (distanceFromViewport / (window.innerHeight * 0.5));
+            // Increased fade-up distance for more responsive animations
+            const fadeUpProgress = 1 - (distanceFromViewport / (window.innerHeight * 0.7));
             const opacity = Math.max(0, fadeUpProgress);
             const translateY = Math.max(0, 60 * (1 - fadeUpProgress));
             
@@ -67,7 +90,7 @@ export default function Home() {
             section.style.opacity = opacity.toString();
             section.style.transform = `translateY(${translateY}px)`;
             section.style.transition = `opacity ${transitionDuration} ease-out, transform ${transitionDuration} ease-out`;
-          } else if (rect.bottom < 0 && rect.bottom > -window.innerHeight * 0.5) {
+          } else if (rect.bottom < 0 && rect.bottom > -window.innerHeight * 0.3) {
             // Section is leaving viewport at the top - fade it out gradually
             const opacity = Math.max(0, 1 - (Math.abs(rect.bottom) / (window.innerHeight * 0.3)));
             
@@ -78,7 +101,8 @@ export default function Home() {
             // Reset sections that are completely below the viewport
             section.style.opacity = "0";
             section.style.transform = "translateY(60px)";
-            section.style.transition = "opacity 0.1s, transform 0.1s";
+            // Faster transition for reset
+            section.style.transition = "opacity 0.2s, transform 0.2s";
           }
         }
       });
@@ -120,10 +144,8 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("wheel", handleWheel, { passive: true });
     
-    // Trigger initial handle scroll to ensure sections are visible
-    setTimeout(() => {
-      handleScroll();
-    }, 200);
+    // Force an initial scroll event to set proper section visibility
+    window.dispatchEvent(new Event('scroll'));
     
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -229,7 +251,7 @@ export default function Home() {
         <div 
           ref={addToRefs(1)}
           className="min-h-screen w-full flex items-center justify-center px-4 py-12"
-          style={{ opacity: 0, transform: 'translateY(60px)' }}
+          style={{ opacity: 0, transform: 'translateY(60px)', transition: 'opacity 0.8s ease-out, transform 0.8s ease-out' }}
         >
           <div className="max-w-3xl text-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-6 md:mb-8">
@@ -276,7 +298,7 @@ export default function Home() {
         <div 
           ref={addToRefs(2)}
           className="min-h-screen w-full flex items-center justify-center px-4"
-          style={{ opacity: 0, transform: 'translateY(60px)' }}
+          style={{ opacity: 0, transform: 'translateY(60px)', transition: 'opacity 0.8s ease-out, transform 0.8s ease-out' }}
         >
           <div className="flex flex-col items-center">
             <h2 className="text-2xl sm:text-3xl font-light mb-8 md:mb-10 text-center">
@@ -312,7 +334,7 @@ export default function Home() {
         <div 
           ref={addToRefs(3)}
           className="min-h-screen w-full flex items-center justify-center px-4"
-          style={{ opacity: 0, transform: 'translateY(60px)' }}
+          style={{ opacity: 0, transform: 'translateY(60px)', transition: 'opacity 0.8s ease-out, transform 0.8s ease-out' }}
         >
           <div className="flex flex-col items-center text-center">
             <h2 className="text-2xl sm:text-3xl font-light mb-6 md:mb-8">
