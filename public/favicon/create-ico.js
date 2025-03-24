@@ -1,27 +1,39 @@
-import pngToIco from 'png-to-ico';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const fs = require('fs');
+const { PNG } = require('pngjs');
+const toIco = require('png-to-ico');
 
-// Get current directory
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// This script creates a multi-size favicon.ico file from PNG files
+// It takes the 16x16, 32x32, and 48x48 PNG files and combines them
 
-// Array of PNG files to include in the ICO
-const pngFiles = [
-  path.join(__dirname, 'favicon-16x16.png'),
-  path.join(__dirname, 'favicon-32x32.png'),
-  path.join(__dirname, 'favicon-48x48.png')
-];
-
-async function createIco() {
+async function createFaviconIco() {
   try {
-    const buffer = await pngToIco(pngFiles);
-    fs.writeFileSync(path.join(__dirname, 'favicon.ico'), buffer);
+    console.log('Creating favicon.ico...');
+    
+    // These are the PNG files we will use for the ICO
+    const pngFiles = [
+      'public/favicon/favicon-16x16.png',
+      'public/favicon/favicon-32x32.png',
+      'public/favicon/favicon-48x48.png'
+    ];
+    
+    // Check if all PNG files exist
+    pngFiles.forEach(file => {
+      if (!fs.existsSync(file)) {
+        throw new Error(`Required file ${file} does not exist. Generate it first.`);
+      }
+    });
+    
+    // Create ICO file from PNGs
+    const buf = await toIco(pngFiles);
+    
+    // Save the ICO file
+    fs.writeFileSync('public/favicon.ico', buf);
+    fs.writeFileSync('public/favicon/favicon.ico', buf);
+    
     console.log('favicon.ico created successfully!');
-  } catch (error) {
-    console.error('Error creating favicon.ico:', error);
+  } catch (err) {
+    console.error('Error creating favicon.ico:', err);
   }
 }
 
-createIco(); 
+createFaviconIco(); 

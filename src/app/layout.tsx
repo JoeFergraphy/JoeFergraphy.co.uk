@@ -1,21 +1,21 @@
-import type { Metadata } from "next";
-import { Playfair_Display } from "next/font/google";
-import "./globals.css";
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter, Playfair_Display } from 'next/font/google';
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ['400', '500', '600', '700', '800'],
-  variable: "--font-playfair",
-});
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: "Joefergraphy Limited | Custom Web Development Solutions",
-  description: "Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.",
-  keywords: ["web development", "website design", "SEO", "e-commerce", "web applications", "UI/UX design", "mobile optimisation", "TwoStopper", "Alertmove"],
-  authors: [{ name: "Joefergraphy Limited" }],
-  creator: "Joefergraphy Limited",
-  publisher: "Joefergraphy Limited",
+  title: 'Joefergraphy Limited | Custom Web Development Solutions',
+  description: 'Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.',
+  keywords: ['web development', 'website design', 'SEO', 'e-commerce', 'web applications', 'UI/UX design', 'mobile optimisation', 'TwoStopper', 'Alertmove'],
+  authors: [{ name: 'Joefergraphy Limited' }],
+  creator: 'Joefergraphy Limited',
+  publisher: 'Joefergraphy Limited',
+  formatDetection: {
+    email: false,
+    telephone: false,
+  },
   manifest: "/site.webmanifest",
   icons: {
     icon: [
@@ -32,32 +32,13 @@ export const metadata: Metadata = {
       { url: '/favicon/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
     ],
   },
-  openGraph: {
-    title: "Joefergraphy Limited | Custom Web Development Solutions",
-    description: "Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.",
-    url: "https://joefergraphy.co.uk",
-    siteName: "Joefergraphy Limited",
-    locale: "en_GB",
-    type: "website",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Joefergraphy Limited",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Joefergraphy Limited | Custom Web Development Solutions",
-    description: "Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.",
-    images: ["/og-image.jpg"],
+  metadataBase: new URL('https://joefergraphy.co.uk'),
+  alternates: {
+    canonical: 'https://joefergraphy.co.uk',
   },
   robots: {
     index: true,
     follow: true,
-    nocache: false,
     googleBot: {
       index: true,
       follow: true,
@@ -65,25 +46,38 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  metadataBase: new URL('https://joefergraphy.co.uk'),
-  themeColor: "#000000",
-  viewport: "width=device-width, initial-scale=1",
-  verification: {
-    google: 'verification_token',  // Replace with your actual verification token when available
+  openGraph: {
+    type: 'website',
+    locale: 'en_GB',
+    url: 'https://joefergraphy.co.uk',
+    siteName: 'Joefergraphy Limited',
+    title: 'Joefergraphy Limited | Custom Web Development Solutions',
+    description: 'Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Joefergraphy Limited',
+      },
+    ],
   },
-  alternates: {
-    canonical: "https://joefergraphy.co.uk",
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Joefergraphy Limited | Custom Web Development Solutions',
+    description: 'Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.',
+    images: ['/og-image.jpg'],
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`antialiased ${playfair.variable}`}>
+      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

@@ -1,140 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Generate JF Favicons</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bold Favicon Generator for Joefergraphy</title>
   <style>
     body {
-      font-family: system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+      color: #333;
     }
-    .canvas-container {
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    #preview {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 40px;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #f9f9f9;
     }
-    canvas {
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-    }
-    .canvas-item {
+    .preview-item {
       display: flex;
       flex-direction: column;
       align-items: center;
+      background: white;
+      border-radius: 4px;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      margin-bottom: 30px;
+    .preview-item img {
+      margin-bottom: 5px;
     }
-    h2 {
-      margin-top: 40px;
+    .preview-item span {
+      font-size: 12px;
+      color: #666;
+    }
+    #download-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .download-link {
+      display: inline-block;
+      padding: 8px 12px;
+      background: #000;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .download-link:hover {
+      background: #333;
+    }
+    .note {
+      background: #fffde7;
+      padding: 15px;
+      border-left: 4px solid #ffd600;
+      margin: 20px 0;
+    }
+    #generator-ui {
+      display: none;
+    }
+    .size-example {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 4px;
+    }
+    .browser-tab {
+      display: flex;
+      align-items: center;
+      background: #f1f1f1;
+      border-radius: 8px 8px 0 0;
+      padding: 5px 15px;
+      width: 200px;
+    }
+    .browser-tab img {
+      margin-right: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>JF Favicon Generator</h1>
-  <p>This page generates "JF" favicon images with white text on black background using Helvetica Thin font.</p>
+  <h1>Bold Favicon Generator for Joefergraphy</h1>
   
-  <button id="generateBtn">Generate All Images</button>
-  
-  <h2>Favicon Sizes</h2>
-  <div class="canvas-container" id="faviconContainer"></div>
-  
-  <h2>Larger PNG for other uses</h2>
-  <div class="canvas-container">
-    <div class="canvas-item">
-      <canvas id="largeCanvas" width="512" height="512"></canvas>
-      <a id="largeDownload" download="JF-512x512.png">Download (512x512)</a>
-    </div>
+  <div class="note">
+    <p><strong>About this tool:</strong> This page generates bold, high-contrast favicons that are more visible at smaller sizes. The generated icons use Helvetica Bold for better legibility.</p>
   </div>
   
+  <div id="generator-ui" class="container">
+    <h2>Preview</h2>
+    
+    <div class="size-example">
+      <div class="browser-tab">
+        <img id="tab-favicon" width="16" height="16" alt="Tab favicon">
+        <span>Joefergraphy</span>
+      </div>
+      <p>← How your favicon looks in a browser tab</p>
+    </div>
+    
+    <div id="preview"></div>
+    
+    <h2>Download Favicon Files</h2>
+    <p>Click on the links below to download each favicon size:</p>
+    
+    <div id="download-links"></div>
+    
+    <div class="note" style="margin-top: 30px;">
+      <h3>How to use these files:</h3>
+      <ol>
+        <li>Download all the files you need</li>
+        <li>Replace the existing files in your public/favicon directory</li>
+        <li>For favicon.ico (multi-size icon), use a tool like <a href="https://convertico.com/" target="_blank">convertico.com</a> to convert the 16x16, 32x32, and 48x48 PNGs into a single ICO file</li>
+      </ol>
+    </div>
+  </div>
+
+  <script src="favicon-generator.js"></script>
   <script>
-    // Favicon sizes needed
-    const sizes = [
-      { size: 16, name: 'favicon-16x16.png' },
-      { size: 32, name: 'favicon-32x32.png' },
-      { size: 48, name: 'favicon.ico size' },
-      { size: 96, name: 'favicon-96x96.png' },
-      { size: 120, name: 'apple-touch-icon.png' },
-      { size: 144, name: 'msapplication-icon' },
-      { size: 152, name: 'apple-touch-icon large' },
-      { size: 180, name: 'apple-touch-icon-180x180.png' },
-      { size: 192, name: 'android-chrome-192x192.png' },
-    ];
-    
-    // Create canvases for each size
-    sizes.forEach(sizeInfo => {
-      const container = document.getElementById('faviconContainer');
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'canvas-item';
-      
-      const canvas = document.createElement('canvas');
-      canvas.width = sizeInfo.size;
-      canvas.height = sizeInfo.size;
-      canvas.id = `canvas-${sizeInfo.size}`;
-      
-      const link = document.createElement('a');
-      link.id = `download-${sizeInfo.size}`;
-      link.download = sizeInfo.name.includes('.png') ? sizeInfo.name : `JF-${sizeInfo.size}x${sizeInfo.size}.png`;
-      link.textContent = `Download (${sizeInfo.size}x${sizeInfo.size})`;
-      
-      itemDiv.appendChild(canvas);
-      itemDiv.appendChild(link);
-      container.appendChild(itemDiv);
+    // Update the tab favicon example
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        const tabFavicon = document.getElementById('tab-favicon');
+        if (tabFavicon) {
+          tabFavicon.src = document.querySelector('#preview img').src;
+        }
+      }, 100);
     });
-    
-    // Main function to render the JF text on all canvases
-    function renderAll() {
-      // Generate all favicon sizes
-      sizes.forEach(sizeInfo => {
-        const canvas = document.getElementById(`canvas-${sizeInfo.size}`);
-        const link = document.getElementById(`download-${sizeInfo.size}`);
-        renderJF(canvas, sizeInfo.size);
-        updateDownloadLink(canvas, link);
-      });
-      
-      // Generate large version
-      const largeCanvas = document.getElementById('largeCanvas');
-      const largeLink = document.getElementById('largeDownload');
-      renderJF(largeCanvas, 512);
-      updateDownloadLink(largeCanvas, largeLink);
-    }
-    
-    // Render JF on a canvas
-    function renderJF(canvas, size) {
-      const ctx = canvas.getContext('2d');
-      
-      // Black background
-      ctx.fillStyle = 'black';
-      ctx.fillRect(0, 0, size, size);
-      
-      // White JF text
-      ctx.fillStyle = 'white';
-      
-      // Font size proportional to canvas size
-      const fontSize = Math.floor(size * 0.45);
-      // Use Helvetica Thin if available, fall back to Helvetica with lighter weight
-      ctx.font = `lighter ${fontSize}px Helvetica, Arial, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      // Draw the JF text
-      ctx.fillText('JF', size/2, size/2);
-    }
-    
-    // Update download link with canvas data
-    function updateDownloadLink(canvas, link) {
-      link.href = canvas.toDataURL('image/png');
-    }
-    
-    // Add event listener to generate button
-    document.getElementById('generateBtn').addEventListener('click', renderAll);
-    
-    // Generate images on page load
-    window.addEventListener('load', renderAll);
   </script>
 </body>
 </html> 

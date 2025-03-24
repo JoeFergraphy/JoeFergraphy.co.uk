@@ -498,7 +498,7 @@ export default function Home() {
                   Under Development
                 </span>
               </motion.div>
-            </div>
+              </div>
             
             {/* SaaS Solutions Section */}
             <motion.h3

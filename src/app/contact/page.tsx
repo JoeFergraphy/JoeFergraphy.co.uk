@@ -30,21 +30,27 @@ export default function ContactForm() {
     setSubmitStatus(null);
     
     try {
-      const response = await fetch('/api/contact', {
+      // Using Formspree with your specific endpoint
+      const response = await fetch('https://formspree.io/f/xrbpklvn', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({
-          ...formData,
-          // Hidden recipient is added on the server side
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          // These hidden fields will be sent to your email but not shown to the user
+          _cc: 'fergus586@gmail.com' // CC to secondary email
         }),
       });
       
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        throw new Error(data.error || 'Something went wrong');
       }
       
       setSubmitStatus('success');
@@ -62,25 +68,63 @@ export default function ContactForm() {
     }
   };
   
+  // Animation variants for staggered animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.3
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { 
+        type: "spring",
+        stiffness: 50
+      }
+    }
+  };
+  
   return (
     <div className="min-h-screen w-full bg-black text-white flex flex-col">
       <div className="flex-1 flex items-center justify-center p-4 md:p-8">
         <motion.div 
           className="w-full max-w-xl"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.7 }}
         >
-          <h1 className="text-3xl md:text-4xl font-light mb-6 md:mb-8">Get in touch</h1>
-          <p className="text-white/80 mb-8">
+          <motion.h1 
+            className="text-3xl md:text-4xl font-light mb-6 md:mb-8"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+          >
+            Get in touch
+          </motion.h1>
+          
+          <motion.p 
+            className="text-white/80 mb-8"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+          >
             Tell us about your project, and we&apos;ll get back to you as soon as possible.
-          </p>
+          </motion.p>
           
           {submitStatus === 'success' ? (
             <motion.div 
               className="bg-green-900/20 border border-green-700/30 rounded-lg p-6 text-center"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 50 }}
             >
               <FiCheck className="text-green-400 mx-auto mb-4 text-3xl" />
               <h3 className="text-xl font-light mb-2">Message sent!</h3>
@@ -93,8 +137,14 @@ export default function ContactForm() {
               </button>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
+            <motion.form 
+              onSubmit={handleSubmit}
+              className="space-y-6"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div variants={itemVariants}>
                 <label htmlFor="name" className="block text-sm font-light mb-2">Your Name</label>
                 <input
                   type="text"
@@ -105,9 +155,9 @@ export default function ContactForm() {
                   required
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-white/30 transition-colors focus:outline-none"
                 />
-              </div>
+              </motion.div>
               
-              <div>
+              <motion.div variants={itemVariants}>
                 <label htmlFor="email" className="block text-sm font-light mb-2">Email Address</label>
                 <input
                   type="email"
@@ -118,9 +168,9 @@ export default function ContactForm() {
                   required
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-white/30 transition-colors focus:outline-none"
                 />
-              </div>
+              </motion.div>
               
-              <div>
+              <motion.div variants={itemVariants}>
                 <label htmlFor="subject" className="block text-sm font-light mb-2">Subject</label>
                 <input
                   type="text"
@@ -131,9 +181,9 @@ export default function ContactForm() {
                   required
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-white/30 transition-colors focus:outline-none"
                 />
-              </div>
+              </motion.div>
               
-              <div>
+              <motion.div variants={itemVariants}>
                 <label htmlFor="message" className="block text-sm font-light mb-2">Your Message</label>
                 <textarea
                   id="message"
@@ -144,10 +194,15 @@ export default function ContactForm() {
                   required
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-white/30 transition-colors focus:outline-none resize-none"
                 />
-              </div>
+              </motion.div>
               
               {submitStatus === 'error' && (
-                <div className="bg-red-900/20 border border-red-700/30 rounded-lg p-4 text-sm">
+                <motion.div 
+                  className="bg-red-900/20 border border-red-700/30 rounded-lg p-4 text-sm"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <div className="flex items-start">
                     <FiX className="text-red-400 mt-0.5 mr-2 flex-shrink-0" />
                     <div>
@@ -155,10 +210,10 @@ export default function ContactForm() {
                       <p className="text-white/80 mt-1">{errorMessage || 'Please try again later.'}</p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
               
-              <div>
+              <motion.div variants={itemVariants}>
                 <motion.button
                   type="submit"
                   disabled={isSubmitting}
@@ -167,19 +222,25 @@ export default function ContactForm() {
                     scale: 1.03,
                     transition: { duration: 0.2 }
                   }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                   {!isSubmitting && <FiArrowRight className="ml-2" />}
                 </motion.button>
-              </div>
-            </form>
+              </motion.div>
+            </motion.form>
           )}
           
-          <div className="mt-8 pt-8 border-t border-white/10">
+          <motion.div 
+            className="mt-8 pt-8 border-t border-white/10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.7 }}
+          >
             <p className="text-white/60 text-sm">
               You can also reach us directly at <a href="mailto:contact@joefergraphy.co.uk" className="text-white hover:underline">contact@joefergraphy.co.uk</a>
             </p>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </div>
