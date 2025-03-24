@@ -202,20 +202,43 @@ export default function Home() {
 
   // Open modal with service details
   const openServiceModal = (service: ServiceData) => {
+    // Store current scroll position
+    const scrollY = window.scrollY;
+    
     setSelectedService(service);
     setTypedText("");
     setCurrentLineIndex(0);
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    
+    // Apply fixed positioning to body without changing scroll
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
   };
 
   // Close modal
   const closeModal = () => {
+    // Get the scroll position from body top
+    const scrollY = document.body.style.top;
+    
+    // Reset all body styles completely
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    document.body.style.overflowX = '';
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.overflowX = '';
+    document.documentElement.style.width = '';
+    
     setSelectedService(null);
-    document.body.style.overflow = 'auto'; // Re-enable scrolling
+    
+    // Restore scroll position
+    window.scrollTo(0, parseInt(scrollY || '0') * -1);
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-black text-white overflow-hidden relative">
+    <div className="flex flex-col min-h-screen w-full bg-black text-white overflow-x-hidden relative">
       {/* Vertical scroll progress indicator - only on mobile */}
       <div className="fixed left-0 top-0 bottom-0 w-1 bg-white/10 z-50 md:hidden">
         <div 
@@ -252,16 +275,16 @@ export default function Home() {
       <AnimatePresence>
         {selectedService && (
           <motion.div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-0 sm:p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="bg-black border border-white/10 rounded-lg w-full max-w-2xl overflow-hidden"
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-black border border-white/10 w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-lg overflow-auto fixed inset-0 sm:relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ type: "spring", damping: 30 }}
             >
               <div className="flex justify-between items-center border-b border-white/10 p-5">
