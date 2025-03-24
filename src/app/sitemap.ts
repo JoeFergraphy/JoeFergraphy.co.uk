@@ -5,21 +5,21 @@ export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://joefergraphy.co.uk';
+  const currentDate = new Date();
   
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 1,
     },
-    // Add more URLs as your site grows
-    // Example:
-    // {
-    //   url: `${baseUrl}/contact`,
-    //   lastModified: new Date(),
-    //   changeFrequency: 'monthly',
-    //   priority: 0.8,
-    // },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    // Add other pages here as your site grows
   ];
 } 

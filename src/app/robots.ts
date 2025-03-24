@@ -8,7 +8,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
+      disallow: ['/api/'],
     },
     sitemap: 'https://joefergraphy.co.uk/sitemap.xml',
+    host: 'https://joefergraphy.co.uk',
   };
 } 

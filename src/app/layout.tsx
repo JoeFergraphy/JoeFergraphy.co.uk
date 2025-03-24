@@ -16,6 +16,20 @@ export const metadata: Metadata = {
     email: false,
     telephone: false,
   },
+  metadataBase: new URL('https://joefergraphy.co.uk'),
+  alternates: {
+    canonical: 'https://joefergraphy.co.uk',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   manifest: "/site.webmanifest",
   icons: {
     icon: [
@@ -31,20 +45,6 @@ export const metadata: Metadata = {
     other: [
       { url: '/favicon/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
     ],
-  },
-  metadataBase: new URL('https://joefergraphy.co.uk'),
-  alternates: {
-    canonical: 'https://joefergraphy.co.uk',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
   },
   openGraph: {
     type: 'website',
@@ -68,6 +68,9 @@ export const metadata: Metadata = {
     description: 'Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.',
     images: ['/og-image.jpg'],
   },
+  verification: {
+    google: 'verification_token', // Replace with your actual verification token when available
+  },
 };
 
 export default function RootLayout({
@@ -77,6 +80,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+        {/* Structured data for business information */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Joefergraphy Limited",
+              "url": "https://joefergraphy.co.uk",
+              "logo": "https://joefergraphy.co.uk/favicon/JF-512x512.png",
+              "description": "Professional web development solutions for your business",
+              "sameAs": [
+                // Add your social media profiles here when available
+              ],
+              "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "UK"
+              }
+            })
+          }}
+        />
+      </head>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         {children}
       </body>

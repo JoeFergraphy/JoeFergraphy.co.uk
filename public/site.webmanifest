@@ -1,7 +1,18 @@
 {
   "name": "Joefergraphy Limited",
   "short_name": "Joefergraphy",
+  "description": "Professional web development solutions",
   "icons": [
+    {
+      "src": "/favicon/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
     {
       "src": "/favicon/android-chrome-192x192.png",
       "sizes": "192x192",
@@ -15,5 +26,7 @@
   ],
   "theme_color": "#000000",
   "background_color": "#000000",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "/",
+  "orientation": "portrait"
 } 
