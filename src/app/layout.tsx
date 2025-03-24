@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
   verification: {
-    google: 'verification_token', // Replace with your actual verification token when available
+    google: 'IxeybyQjZ_GYb1Fcps4U7lTLggTOcQWQKH-6INdVKGk', // Replace with your actual verification token when available
   },
 };
 
@@ -83,6 +83,7 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
+        <meta name="google-site-verification" content="IxeybyQjZ_GYb1Fcps4U7lTLggTOcQWQKH-6INdVKGk" />
         {/* Structured data for business information */}
         <script
           type="application/ld+json"
