@@ -27,10 +27,9 @@ export async function POST(request: Request) {
 
     // Email content
     const mailOptions = {
-      from: `"Joefergraphy Website" <${process.env.EMAIL_FROM || 'contact@joefergraphy.co.uk'}>`,
-      to: process.env.EMAIL_TO || 'contact@joefergraphy.co.uk',
-      // Hidden CC to the secondary email
-      cc: process.env.EMAIL_CC || 'fergus586@gmail.com',
+      from: `"Joefergraphy Website" <${process.env.EMAIL_FROM || 'noreply@joefergraphy.co.uk'}>`,
+      to: process.env.EMAIL_TO || 'fergus586@gmail.com',
+      // No CC needed since we're sending directly to the primary email
       replyTo: email,
       subject: `Contact Form: ${subject}`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,

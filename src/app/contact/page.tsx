@@ -30,7 +30,7 @@ export default function ContactForm() {
     setSubmitStatus(null);
     
     try {
-      // Using Formspree with your specific endpoint
+      // Using Formspree only - GitHub Pages doesn't support server API routes
       const response = await fetch('https://formspree.io/f/xrbpklvn', {
         method: 'POST',
         headers: {
@@ -42,8 +42,9 @@ export default function ContactForm() {
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
-          // These hidden fields will be sent to your email but not shown to the user
-          _cc: 'fergus586@gmail.com' // CC to secondary email
+          // These are Formspree-specific fields
+          _replyto: formData.email,
+          _subject: `Contact Form: ${formData.subject}`
         }),
       });
       
