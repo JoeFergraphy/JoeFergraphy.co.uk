@@ -284,7 +284,7 @@ export default function Home() {
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="bg-black border border-white/10 w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-lg overflow-auto fixed inset-0 sm:relative"
+              className="bg-black border border-white/10 w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-lg overflow-auto fixed inset-0 sm:relative custom-scrollbar"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
