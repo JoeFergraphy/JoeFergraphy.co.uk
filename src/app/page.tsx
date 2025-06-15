@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiChevronDown, FiArrowRight, FiX } from "react-icons/fi";
+import { trackPageView, trackButtonClick, trackModalOpen } from "@/utils/analytics";
 
 // Type for our service data
 interface ServiceData {
@@ -143,6 +144,9 @@ export default function Home() {
   }, [selectedService]);
 
   useEffect(() => {
+    // Track initial page view
+    trackPageView("Portfolio Homepage");
+
     // Initial load animation for Joefergraphy only
     const timer = setTimeout(() => {
       setIsLoaded(true);
@@ -189,6 +193,10 @@ export default function Home() {
 
   const scrollToSection = (index: number) => {
     if (sectionRefs.current[index]) {
+      // Track navigation clicks
+      const sectionNames = ['Hero Section', 'Services Section', 'Platforms Section', 'Contact Section'];
+      trackButtonClick(`Navigate to ${sectionNames[index]}`, `Section navigation: ${index + 1}`);
+
       // Use a simple smooth scroll
       window.scrollTo({
         top: sectionRefs.current[index].offsetTop,
@@ -202,6 +210,9 @@ export default function Home() {
 
   // Open modal with service details
   const openServiceModal = (service: ServiceData) => {
+    // Track service modal opening
+    trackModalOpen(service.title);
+
     // Store current scroll position
     const scrollY = window.scrollY;
     
@@ -351,6 +362,7 @@ export default function Home() {
                       scale: 1.03,
                       transition: { duration: 0.2 }
                     }}
+                    onClick={() => trackButtonClick(`Get started with ${selectedService.title}`, `Service: ${selectedService.title}`)}
                   >
                     Get started with {selectedService.title}
                     <FiArrowRight className="ml-2" />
@@ -386,7 +398,10 @@ export default function Home() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.5, duration: 0.5 }}
-            onClick={() => scrollToSection(1)}
+            onClick={() => {
+              trackButtonClick('Scroll to discover', 'Hero section scroll indicator');
+              scrollToSection(1);
+            }}
           >
             <p className="text-sm font-light mb-2 text-white/70">Scroll to discover</p>
             <motion.div
@@ -502,6 +517,7 @@ export default function Home() {
                     scale: 1.05,
                     transition: { duration: 0.2 }
                   }}
+                  onClick={() => trackButtonClick('Visit Two Stopper website', 'External link: https://twostopper.co.uk/')}
                 >
                   Visit website
                   <FiArrowRight className="ml-2" />
@@ -587,6 +603,7 @@ export default function Home() {
                 scale: 1.05,
                 transition: { duration: 0.2 }
               }}
+              onClick={() => trackButtonClick('Get in touch', 'Main CTA button from homepage')}
             >
               Get in touch
               <FiArrowRight className="ml-2" />

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowRight, FiCheck, FiX } from 'react-icons/fi';
 import emailjs from '@emailjs/browser';
+import { trackPageView, trackFormInteraction, trackButtonClick } from '@/utils/analytics';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -18,12 +19,21 @@ export default function ContactForm() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
+    // Track contact page view
+    trackPageView("Contact Form");
+
     // Initialize EmailJS with your public key
     emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your actual public key
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    
+    // Track first interaction with each field
+    if (!formData[name as keyof typeof formData] && value) {
+      trackFormInteraction('Contact Form', `started filling ${name} field`);
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -32,6 +42,10 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Track form submission attempt
+    trackFormInteraction('Contact Form', 'submitted');
+    
     setIsSubmitting(true);
     setSubmitStatus(null);
     
@@ -129,7 +143,10 @@ export default function ContactForm() {
               <h3 className="text-xl font-light mb-2">Message sent!</h3>
               <p className="text-white/80 mb-6">Thank you for contacting us. We&apos;ll be in touch shortly.</p>
               <button 
-                onClick={() => setSubmitStatus(null)}
+                onClick={() => {
+                  trackButtonClick('Send another message', 'Contact form reset');
+                  setSubmitStatus(null);
+                }}
                 className="px-5 py-2 border border-white/30 rounded-full text-sm hover:bg-white/10 transition-colors"
               >
                 Send another message
@@ -237,7 +254,11 @@ export default function ContactForm() {
             transition={{ delay: 1.2, duration: 0.7 }}
           >
             <p className="text-white/60 text-sm">
-              You can also reach us directly at <a href="mailto:contact@joefergraphy.co.uk" className="text-white hover:underline">contact@joefergraphy.co.uk</a>
+              You can also reach us directly at <a 
+                href="mailto:contact@joefergraphy.co.uk" 
+                className="text-white hover:underline"
+                onClick={() => trackButtonClick('Email contact link', 'Direct email: contact@joefergraphy.co.uk')}
+              >contact@joefergraphy.co.uk</a>
             </p>
           </motion.div>
         </motion.div>
