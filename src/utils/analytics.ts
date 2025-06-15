@@ -97,33 +97,31 @@ async function collectUserData(eventType: string, eventName: string, additionalI
 
 // Create Discord embed
 function createDiscordEmbed(data: UserAnalytics) {
-  const mapsUrl = data.locationData 
-    ? `https://www.google.com/maps?q=${data.locationData.lat},${data.locationData.lng}`
-    : null;
-
+  const browserInfo = getBrowserInfo(data.userAgent);
+  
   return {
-    username: 'joefergraphy',
+    username: 'Joefergraphy Analytics',
     embeds: [{
-      title: `${data.eventType} Detected!`,
-      description: `Someone ${data.eventDetails.name}`,
+      title: `🚀 Project Click Detected!`,
+      description: `Someone clicked on **${data.eventDetails.name}**`,
       color: 0x000000, // Black color
       fields: [
         {
-          name: '📂 Event Details',
+          name: '📂 Project Details',
           value: `**Name:** ${data.eventDetails.name}\n**URL:** ${data.eventDetails.url}${data.eventDetails.additionalInfo ? `\n**Info:** ${data.eventDetails.additionalInfo}` : ''}`,
           inline: false
         },
         {
           name: '👤 User Information',
-          value: `**Browser:** ${data.userAgent.split(' ')[0] || 'Unknown'}\n**Platform:** ${data.platform}\n**Language:** ${data.language}\n**Screen:** ${data.screenResolution}\n**Viewport:** ${data.viewportSize}`,
-          inline: false
+          value: `**Browser:** ${browserInfo.name}${browserInfo.version ? `/${browserInfo.version}` : ''}\n**Platform:** ${data.platform}\n**Language:** ${data.language}\n**Screen:** ${data.screenResolution}\n**Viewport:** ${data.viewportSize}`,
+          inline: true
         },
         {
           name: '🌍 Location Information',
           value: data.locationData 
             ? `**IP:** ${data.locationData.ip}\n**City:** ${data.locationData.city}\n**Region:** ${data.locationData.region}\n**Country:** ${data.locationData.country}\n**ISP:** ${data.locationData.isp}`
             : 'Location data unavailable',
-          inline: false
+          inline: true
         },
         {
           name: '⏰ Session Details',
@@ -132,7 +130,7 @@ function createDiscordEmbed(data: UserAnalytics) {
         },
         {
           name: '📍 Coordinates',
-          value: data.locationData 
+          value: data.locationData && data.locationData.lat && data.locationData.lng
             ? `**Lat:** ${data.locationData.lat}\n**Lng:** ${data.locationData.lng}\n🗺️ [Open in Google Maps](https://www.google.com/maps?q=${data.locationData.lat},${data.locationData.lng})`
             : 'Coordinates unavailable',
           inline: false
@@ -144,6 +142,60 @@ function createDiscordEmbed(data: UserAnalytics) {
       }
     }]
   };
+}
+
+// Helper function to parse browser information
+function getBrowserInfo(userAgent: string) {
+  const browsers = [
+    { name: 'Chrome', regex: /Chrome\/(\d+\.\d+)/ },
+    { name: 'Firefox', regex: /Firefox\/(\d+\.\d+)/ },
+    { name: 'Safari', regex: /Version\/(\d+\.\d+).*Safari/ },
+    { name: 'Edge', regex: /Edg\/(\d+\.\d+)/ },
+    { name: 'Opera', regex: /OPR\/(\d+\.\d+)/ }
+  ];
+
+  for (const browser of browsers) {
+    const match = userAgent.match(browser.regex);
+    if (match) {
+      return { name: browser.name, version: match[1] };
+    }
+  }
+
+  return { name: 'Unknown', version: '' };
+}
+
+// Helper function to get country flag emoji
+function getCountryFlag(country?: string) {
+  const flags: { [key: string]: string } = {
+    'United Kingdom': '🇬🇧',
+    'United States': '🇺🇸',
+    'Canada': '🇨🇦',
+    'Australia': '🇦🇺',
+    'Germany': '🇩🇪',
+    'France': '🇫🇷',
+    'Spain': '🇪🇸',
+    'Italy': '🇮🇹',
+    'Netherlands': '🇳🇱',
+    'Sweden': '🇸🇪',
+    'Norway': '🇳🇴',
+    'Denmark': '🇩🇰',
+    'Finland': '🇫🇮',
+    'Ireland': '🇮🇪',
+    'Belgium': '🇧🇪',
+    'Switzerland': '🇨🇭',
+    'Austria': '🇦🇹',
+    'Portugal': '🇵🇹',
+    'Japan': '🇯🇵',
+    'South Korea': '🇰🇷',
+    'China': '🇨🇳',
+    'Israel': '🇮🇱',
+    'India': '🇮🇳',
+    'Brazil': '🇧🇷',
+    'Mexico': '🇲🇽',
+    'Argentina': '🇦🇷'
+  };
+
+  return country ? flags[country] || '🌐' : '🌐';
 }
 
 // Send webhook to Discord
