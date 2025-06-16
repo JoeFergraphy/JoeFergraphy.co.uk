@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowRight, FiCheck, FiX } from 'react-icons/fi';
-import emailjs from '@emailjs/browser';
 import { trackPageView, trackFormInteraction, trackButtonClick } from '@/utils/analytics';
 
 export default function ContactForm() {
@@ -21,9 +20,6 @@ export default function ContactForm() {
   useEffect(() => {
     // Track contact page view
     trackPageView("Contact Form");
-
-    // Initialize EmailJS with your public key
-    emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your actual public key
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,37 +39,45 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Track form submission attempt
+    // Track form submission attempt  
     trackFormInteraction('Contact Form', 'submitted');
     
     setIsSubmitting(true);
     setSubmitStatus(null);
     
     try {
-      const response = await emailjs.send(
-        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
-        {
-          from_name: formData.name,
-          from_email: formData.email,
+      // Using original Formspree endpoint
+      const response = await fetch('https://formspree.io/f/xrbpklvn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
           subject: formData.subject,
           message: formData.message,
-        }
-      );
-
-      if (response.status === 200) {
-        setSubmitStatus('success');
-        setFormData({
-          name: '',
-          email: '',
-          subject: '',
-          message: ''
-        });
-      } else {
-        throw new Error('Failed to send message');
+          // These are Formspree-specific fields
+          _replyto: formData.email,
+          _subject: `Contact Form: ${formData.subject}`
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong');
       }
+      
+      setSubmitStatus('success');
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
     } catch (error) {
-      console.error('Form submission error:', error);
       setSubmitStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'Failed to send message');
     } finally {
