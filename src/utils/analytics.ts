@@ -49,7 +49,7 @@ function getWebhookConfig() {
   const parts = [
     'aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3Mv', // base64: 'https://discord.com/api/webhooks/'
     'MTM4NTAwNjk5MTY3NTc1MjUyOQ==', // base64: '1385006991675752529'
-    'YmxhSG9CVUM0OVpoN0pUQ291Z05LdGh4eGdScTVmMGpTeGlZaVJZaVNlVGQyVUx2LWdpcEF2MkM3T0FGRUFHQ1ljQ2FoYWk=', // base64: webhook token
+    'YmxhSG9CVUMzOVpoN0p0Q291Z05LdGh4eGdScTVmMGpTeGlZaVJ5U2VUZDJ1THYtZ2lwQXYyTDdhT0ZPREZZY0MwZ2M=', // base64: webhook token
   ];
   
   try {
