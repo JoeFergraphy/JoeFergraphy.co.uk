@@ -44,6 +44,8 @@ function getSessionId(): string {
 }
 
 // Obfuscated webhook configuration (to prevent easy discovery and spam)
+// DISCORD WEBHOOK DISABLED - Commented out to prevent notifications
+/*
 function getWebhookConfig() {
   // Split and encode the webhook URL to make it harder to find via simple grep/search
   const parts = [
@@ -62,6 +64,7 @@ function getWebhookConfig() {
     return null;
   }
 }
+*/
 
 // Get user's location data
 async function getLocationData(): Promise<UserAnalytics['locationData'] | undefined> {
@@ -116,6 +119,8 @@ async function collectUserData(eventType: string, eventName: string, additionalI
 }
 
 // Create Discord embed
+// DISCORD FUNCTIONALITY DISABLED - Commented out to prevent notifications
+/*
 function createDiscordEmbed(data: UserAnalytics) {
   const browserInfo = getBrowserInfo(data.userAgent);
   
@@ -163,6 +168,7 @@ function createDiscordEmbed(data: UserAnalytics) {
     }]
   };
 }
+*/
 
 // Helper function to parse browser information
 function getBrowserInfo(userAgent: string) {
@@ -219,6 +225,8 @@ function getCountryFlag(country?: string) {
 }
 
 // Send webhook to Discord
+// DISCORD FUNCTIONALITY DISABLED - Commented out to prevent notifications
+/*
 async function sendDiscordWebhook(data: UserAnalytics) {
   const webhookUrl = getWebhookConfig();
   
@@ -240,6 +248,7 @@ async function sendDiscordWebhook(data: UserAnalytics) {
     // Silently fail to avoid exposing the tracking to users
   }
 }
+*/
 
 // Main function to track events
 export async function trackEvent(eventType: string, eventName: string, additionalInfo?: string) {
@@ -247,7 +256,8 @@ export async function trackEvent(eventType: string, eventName: string, additiona
   
   try {
     const analytics = await collectUserData(eventType, eventName, additionalInfo);
-    await sendDiscordWebhook(analytics);
+    // DISCORD NOTIFICATION DISABLED - Commented out to prevent notifications
+    // await sendDiscordWebhook(analytics);
   } catch (error) {
     // Silently fail to avoid exposing the tracking to users
   }
