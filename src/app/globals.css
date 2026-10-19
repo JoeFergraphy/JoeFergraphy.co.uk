@@ -1,97 +1,116 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  --background: #030303;
+  --foreground: #e8e8e6;
+  --signal: #ff3b2f;
+  --tt-blue: #4a8fe7;
+  --tt-blue-dark: #2762b0;
+  --tt: 0;
   scroll-behavior: smooth;
+}
+
+html {
+  font-size: 15px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Helvetica', sans-serif;
-  --font-mono: 'Helvetica', sans-serif;
-  --font-artistic: var(--font-playfair);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-signal: var(--signal);
+  --color-tt: var(--tt-blue);
+  --color-tt-dark: var(--tt-blue-dark);
+  --font-sans: var(--font-grotesk), 'Helvetica', sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-display: var(--font-grotesk), 'Helvetica', sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Helvetica', sans-serif;
+  font-family: var(--font-grotesk), 'Helvetica', sans-serif;
   margin: 0;
   padding: 0;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Apple-style typography */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 300; /* Apple uses light font weights */
-  letter-spacing: -0.03em; /* Tighter kerning like Apple */
+::selection {
+  background: var(--foreground);
+  color: #000;
 }
 
-/* Custom scrollbar for Webkit browsers (Chrome, Safari, newer versions of Opera) */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+
+/* TenantTool blue wash, faded in by SignalScene via --tt */
+.tt-wash {
+  pointer-events: none;
+  opacity: var(--tt);
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(74, 143, 231, 0.38), transparent 70%),
+    linear-gradient(180deg, #06142b 0%, #0b2347 50%, #06142b 100%);
+}
+
+/* Keeps copy readable where it sits over the mesh */
+.legible {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 0, 0, 0.9);
+}
+
+/* Darkens the edges of the 3D scene */
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5; /* above the 3D scene, below content */
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+.flicker {
+  animation: flicker 4s infinite;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 62%, 64%, 100% { opacity: 1; }
+  20%, 63% { opacity: 0.35; }
+}
+
+.blink {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flicker,
+  .blink {
+    animation: none;
+  }
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: #000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-  transition: background 0.2s ease;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
 
-/* Enhanced scrollbar for modal components */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 3px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-  transition: all 0.3s ease;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-/* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.2);
+  scrollbar-color: rgba(255, 255, 255, 0.25) #000;
 }
-
-/* Firefox custom scrollbar for modal */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.3);
-}
-
-/* For Edge and IE */
-body {
-  -ms-overflow-style: none;
-} 

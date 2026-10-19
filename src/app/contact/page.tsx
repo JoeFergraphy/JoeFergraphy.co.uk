@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowRight, FiCheck, FiX } from 'react-icons/fi';
 import { trackPageView, trackFormInteraction, trackButtonClick } from '@/utils/analytics';
+import Scramble from '@/components/Scramble';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -109,49 +110,63 @@ export default function ContactForm() {
     }
   };
   
+  const inputClass =
+    "w-full border-0 border-b border-foreground/20 bg-transparent px-0 py-3 text-foreground placeholder:text-foreground/25 transition-colors focus:border-foreground/70 focus:outline-none focus:ring-0";
+  const labelClass = "block font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/50";
+
   return (
-    <div className="min-h-screen w-full bg-black text-white flex flex-col">
+    <div className="relative min-h-screen w-full bg-background text-foreground flex flex-col">
+      <header className="flex items-center justify-between px-4 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60 sm:px-8 sm:text-[11px]">
+        <a href="/" className="hover:text-foreground transition-colors">&larr; Joefergraphy Ltd</a>
+      </header>
+
       <div className="flex-1 flex items-center justify-center p-4 md:p-8">
         <motion.div 
-          className="w-full max-w-xl"
+          className="w-full max-w-lg border border-foreground/15 bg-black/60 backdrop-blur-md"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7 }}
         >
+          <div className="flex items-center justify-between border-b border-foreground/15 px-5 py-3 font-mono text-[10px] uppercase tracking-[0.25em] text-foreground/50 sm:px-8">
+            <span>Contact</span>
+            <span>Reply within one working day</span>
+          </div>
+
+          <div className="px-5 py-8 sm:px-8 sm:py-10">
           <motion.h1 
-            className="text-3xl md:text-4xl font-light mb-6 md:mb-8"
+            className="font-display text-3xl md:text-4xl font-medium mb-3"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
           >
-            Get in touch
+            <Scramble text="Get in touch" delay={200} />
           </motion.h1>
           
           <motion.p 
-            className="text-white/80 mb-8"
+            className="text-foreground/60 mb-10 text-sm leading-relaxed"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            Tell us about your project, and we&apos;ll get back to you as soon as possible.
+            Tell us what you need and we will get back to you.
           </motion.p>
           
           {submitStatus === 'success' ? (
             <motion.div 
-              className="bg-green-900/20 border border-green-700/30 rounded-lg p-6 text-center"
+              className="border border-emerald-500/30 p-6 text-center"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 50 }}
             >
-              <FiCheck className="text-green-400 mx-auto mb-4 text-3xl" />
-              <h3 className="text-xl font-light mb-2">Message sent!</h3>
-              <p className="text-white/80 mb-6">Thank you for contacting us. We&apos;ll be in touch shortly.</p>
+              <FiCheck className="text-emerald-400 mx-auto mb-4 text-3xl" />
+              <h3 className="font-mono text-sm uppercase tracking-[0.3em] mb-2">Message sent</h3>
+              <p className="text-foreground/60 text-sm mb-6">We&apos;ll be in touch shortly.</p>
               <button 
                 onClick={() => {
                   trackButtonClick('Send another message', 'Contact form reset');
                   setSubmitStatus(null);
                 }}
-                className="px-5 py-2 border border-white/30 rounded-full text-sm hover:bg-white/10 transition-colors"
+                className="border border-foreground/30 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors hover:border-foreground hover:text-foreground"
               >
                 Send another message
               </button>
@@ -159,13 +174,13 @@ export default function ContactForm() {
           ) : (
             <motion.form 
               onSubmit={handleSubmit}
-              className="space-y-6"
+              className="space-y-8"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
             >
               <motion.div variants={itemVariants}>
-                <label htmlFor="name" className="block text-sm font-light mb-2">Your Name</label>
+                <label htmlFor="name" className={labelClass}>Name</label>
                 <input
                   type="text"
                   id="name"
@@ -173,12 +188,12 @@ export default function ContactForm() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-white/30 transition-colors focus:outline-none"
+                  className={inputClass}
                 />
               </motion.div>
               
               <motion.div variants={itemVariants}>
-                <label htmlFor="email" className="block text-sm font-light mb-2">Email Address</label>
+                <label htmlFor="email" className={labelClass}>Email</label>
                 <input
                   type="email"
                   id="email"
@@ -186,12 +201,12 @@ export default function ContactForm() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-white/30 transition-colors focus:outline-none"
+                  className={inputClass}
                 />
               </motion.div>
               
               <motion.div variants={itemVariants}>
-                <label htmlFor="subject" className="block text-sm font-light mb-2">Subject</label>
+                <label htmlFor="subject" className={labelClass}>Subject</label>
                 <input
                   type="text"
                   id="subject"
@@ -199,12 +214,12 @@ export default function ContactForm() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-white/30 transition-colors focus:outline-none"
+                  className={inputClass}
                 />
               </motion.div>
               
               <motion.div variants={itemVariants}>
-                <label htmlFor="message" className="block text-sm font-light mb-2">Your Message</label>
+                <label htmlFor="message" className={labelClass}>Message</label>
                 <textarea
                   id="message"
                   name="message"
@@ -212,61 +227,61 @@ export default function ContactForm() {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-white/30 transition-colors focus:outline-none resize-none"
+                  className={`${inputClass} resize-none`}
                 />
               </motion.div>
               
               {submitStatus === 'error' && (
                 <motion.div 
-                  className="bg-red-900/20 border border-red-700/30 rounded-lg p-4 text-sm"
+                  className="border border-signal/40 p-4 text-sm"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
                 >
                   <div className="flex items-start">
-                    <FiX className="text-red-400 mt-0.5 mr-2 flex-shrink-0" />
+                    <FiX className="text-signal mt-0.5 mr-2 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-red-300">Failed to send message</p>
-                      <p className="text-white/80 mt-1">{errorMessage || 'Please try again later.'}</p>
+                      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-signal">Message not sent</p>
+                      <p className="text-foreground/70 mt-1">{errorMessage || 'Please try again later.'}</p>
                     </div>
                   </div>
                 </motion.div>
               )}
               
               <motion.div variants={itemVariants}>
-                <motion.button
+                <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-3 border border-white rounded-full text-sm font-light hover:bg-white hover:text-black transition-colors inline-flex items-center"
-                  whileHover={{ 
-                    scale: 1.03,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ scale: 0.98 }}
+                  className="group inline-flex items-center gap-3 bg-foreground px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-black transition-colors hover:bg-white/80 disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                  {!isSubmitting && <FiArrowRight className="ml-2" />}
-                </motion.button>
+                  {isSubmitting ? (
+                    'Sending...'
+                  ) : (
+                    <>Send message <FiArrowRight className="transition-transform group-hover:translate-x-0.5" /></>
+                  )}
+                </button>
               </motion.div>
             </motion.form>
           )}
           
           <motion.div 
-            className="mt-8 pt-8 border-t border-white/10"
+            className="mt-10 pt-6 border-t border-foreground/10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2, duration: 0.7 }}
           >
-            <p className="text-white/60 text-sm">
-              You can also reach us directly at <a 
+            <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/40">
+              Or email{' '}
+              <a 
                 href="mailto:contact@joefergraphy.co.uk" 
-                className="text-white hover:underline"
+                className="text-foreground/80 normal-case tracking-normal hover:text-foreground transition-colors"
                 onClick={() => trackButtonClick('Email contact link', 'Direct email: contact@joefergraphy.co.uk')}
               >contact@joefergraphy.co.uk</a>
             </p>
           </motion.div>
+          </div>
         </motion.div>
       </div>
     </div>
   );
-} 
+}

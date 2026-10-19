@@ -1,615 +1,164 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { FiChevronDown, FiArrowRight, FiX } from "react-icons/fi";
-import { trackPageView, trackButtonClick, trackModalOpen } from "@/utils/analytics";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { FiArrowUpRight, FiArrowRight } from "react-icons/fi";
+import SignalScene from "@/components/SignalScene";
+import Scramble from "@/components/Scramble";
+import { trackPageView, trackButtonClick } from "@/utils/analytics";
 
-// Type for our service data
-interface ServiceData {
-  title: string;
-  desc: string;
-  longDesc: string[];
-  techStack: string[];
-}
+const TENANTTOOL_URL = "https://tenanttool.co.uk/";
+
+const principles = [
+  { title: "Useful first", body: "Software that removes real work from real businesses, not features for their own sake." },
+  { title: "Built properly", body: "Reliable, secure and maintained for the long term, by people who use it." },
+  { title: "Next generation", body: "Modern infrastructure and AI where it genuinely helps, kept out of the way where it does not." },
+];
+
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.3 },
+  transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const },
+};
 
 export default function Home() {
-  const sectionRefs = useRef<HTMLDivElement[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [activeSection, setActiveSection] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [selectedService, setSelectedService] = useState<ServiceData | null>(null);
-  const [typedText, setTypedText] = useState("");
-  const [currentLineIndex, setCurrentLineIndex] = useState(0);
-  const [showCursor, setShowCursor] = useState(true);
-
-  // Service data with extended descriptions for the modal
-  const services: ServiceData[] = [
-    { 
-      title: "Website Design", 
-      desc: "Responsive, modern websites that captivate your audience.",
-      longDesc: [
-        "We create visually stunning websites that perfectly represent your brand and business objectives.",
-        "All our websites are fully responsive, ensuring an optimal experience across all devices and screen sizes.",
-        "We focus on intuitive navigation and user experience to maximise engagement and conversion rates.",
-        "Our designs incorporate modern aesthetics with timeless principles for an enduring digital presence."
-      ],
-      techStack: ["HTML5", "CSS3/SASS", "JavaScript", "React", "Next.js", "Tailwind CSS"]
-    },
-    { 
-      title: "Search Engine Optimisation", 
-      desc: "Boost your visibility and reach more customers online.",
-      longDesc: [
-        "We conduct thorough keyword research to identify the most valuable search terms for your business.",
-        "Our technical SEO expertise ensures your website is fully optimised for search engine crawlers.",
-        "We implement on-page SEO strategies that enhance your content's relevance and authority.",
-        "Our ongoing analysis provides insights to continuously improve your search performance and visibility."
-      ],
-      techStack: ["Google Analytics", "Search Console", "Ahrefs", "Schema Markup", "Content Strategy"]
-    },
-    { 
-      title: "E-commerce Solutions", 
-      desc: "Custom online shops with secure payment processing.",
-      longDesc: [
-        "We build tailored e-commerce platforms that showcase your products in the most compelling way.",
-        "Our secure payment integration solutions ensure customer transactions are protected and streamlined.",
-        "We implement inventory management systems that simplify stock control and order fulfilment.",
-        "Our e-commerce solutions are designed for scalability, growing alongside your business."
-      ],
-      techStack: ["Shopify", "WooCommerce", "Stripe", "PayPal", "Next.js Commerce", "Sanity"]
-    },
-    { 
-      title: "Web Applications", 
-      desc: "Tailored applications that solve specific business challenges.",
-      longDesc: [
-        "We develop custom web applications designed to address your unique business requirements.",
-        "Our solutions integrate seamlessly with existing systems and third-party APIs.",
-        "We build applications with scalable architecture to ensure performance as your user base grows.",
-        "Our web applications focus on automation and efficiency, streamlining your business processes."
-      ],
-      techStack: ["React", "Next.js", "Node.js", "MongoDB", "PostgreSQL", "AWS"]
-    },
-    { 
-      title: "UI/UX Design", 
-      desc: "Intuitive interfaces that enhance user experience.",
-      longDesc: [
-        "We create user-centred designs that prioritise ease of use and accessibility.",
-        "Our interactive wireframes and prototypes allow for testing and refinement before development.",
-        "We implement data-driven design decisions based on user research and behaviour analysis.",
-        "Our designs maintain visual consistency while guiding users intuitively through their journey."
-      ],
-      techStack: ["Figma", "Adobe XD", "User Research", "Interaction Design", "User Testing"]
-    },
-    { 
-      title: "Mobile Optimisation", 
-      desc: "Ensure your digital presence works perfectly on all devices.",
-      longDesc: [
-        "We implement mobile-first design principles to ensure optimal performance on smartphones and tablets.",
-        "Our optimisation techniques focus on speed and performance for users on mobile networks.",
-        "We design touch-friendly interfaces with appropriate element sizing and spacing for mobile interaction.",
-        "We conduct extensive cross-device testing to ensure consistent experiences across all platforms."
-      ],
-      techStack: ["Responsive Design", "Progressive Web Apps", "Performance Optimization", "Mobile Testing"]
-    }
-  ];
-
-  // CLI typing animation effect
   useEffect(() => {
-    if (!selectedService) {
-      setTypedText("");
-      setCurrentLineIndex(0);
-      return;
-    }
-
-    const allLines = [
-      `> Loading ${selectedService.title} details...`,
-      `> Description:`,
-      ...selectedService.longDesc.map(desc => `  - ${desc}`),
-      `> Technologies:`,
-      `  ${selectedService.techStack.join(', ')}`,
-      `> Ready to implement this solution for your business?`,
-      `> Contact us to get started.`
-    ];
-
-    if (currentLineIndex < allLines.length) {
-      const currentLine = allLines[currentLineIndex];
-      let i = 0;
-      
-      const typingInterval = setInterval(() => {
-        if (i < currentLine.length) {
-          setTypedText(prev => prev + currentLine.charAt(i));
-          i++;
-        } else {
-          clearInterval(typingInterval);
-          setTimeout(() => {
-            setTypedText(prev => prev + '\n');
-            setCurrentLineIndex(prevIndex => prevIndex + 1);
-          }, 500);
-        }
-      }, 30);
-      
-      return () => clearInterval(typingInterval);
-    }
-  }, [selectedService, currentLineIndex]);
-
-  // Blinking cursor effect
-  useEffect(() => {
-    if (!selectedService) return;
-    
-    const cursorInterval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 500);
-    
-    return () => clearInterval(cursorInterval);
-  }, [selectedService]);
-
-  useEffect(() => {
-    // Track initial page view
-    trackPageView("Portfolio Homepage");
-
-    // Initial load animation for Joefergraphy only
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 100);
-
-    // Update scroll progress for scroll indicator
-    const handleScrollProgress = () => {
-      setScrollProgress(window.scrollY / (document.body.scrollHeight - window.innerHeight));
-    };
-
-    const handleScroll = () => {
-      // Determine which section is active based on scroll position
-      let currentSection = 0;
-      sectionRefs.current.forEach((section, index) => {
-        if (!section) return;
-        
-        const rect = section.getBoundingClientRect();
-        // Simple check if section is in view
-        if (rect.top < window.innerHeight * 0.6 && rect.bottom > 0) {
-          currentSection = index;
-        }
-      });
-      
-      setActiveSection(currentSection);
-      handleScrollProgress();
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    
-    // Force an initial scroll event to set proper section
-    window.dispatchEvent(new Event('scroll'));
-    
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearTimeout(timer);
-    };
+    trackPageView("Homepage");
   }, []);
 
-  const addToRefs = (index: number) => (el: HTMLDivElement | null) => {
-    if (el && !sectionRefs.current.includes(el)) {
-      sectionRefs.current[index] = el;
-    }
-  };
-
-  const scrollToSection = (index: number) => {
-    if (sectionRefs.current[index]) {
-      // Track navigation clicks
-      const sectionNames = ['Hero Section', 'Services Section', 'Platforms Section', 'Contact Section'];
-      trackButtonClick(`Navigate to ${sectionNames[index]}`, `Section navigation: ${index + 1}`);
-
-      // Use a simple smooth scroll
-      window.scrollTo({
-        top: sectionRefs.current[index].offsetTop,
-        behavior: 'smooth'
-      });
-      
-      // Update active section
-      setActiveSection(index);
-    }
-  };
-
-  // Open modal with service details
-  const openServiceModal = (service: ServiceData) => {
-    // Track service modal opening
-    trackModalOpen(service.title);
-
-    // Store current scroll position
-    const scrollY = window.scrollY;
-    
-    setSelectedService(service);
-    setTypedText("");
-    setCurrentLineIndex(0);
-    
-    // Apply fixed positioning to body without changing scroll
-    // Fix to prevent scroll jump - order matters!
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-  };
-
-  // Close modal
-  const closeModal = () => {
-    // Get the scroll position from body top
-    const scrollY = document.body.style.top;
-    
-    // Reset all body styles completely
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
-    
-    setSelectedService(null);
-    
-    // Restore scroll position
-    if (scrollY) {
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    }
-  };
-
   return (
-    <div className="flex flex-col min-h-screen w-full bg-black text-white overflow-x-hidden relative">
-      {/* Vertical scroll progress indicator - only on mobile */}
-      <div className="fixed left-0 top-0 bottom-0 w-1 bg-white/10 z-50 md:hidden">
-        <div 
-          className="bg-white w-full transition-all duration-200 ease-out"
-          style={{ height: `${scrollProgress * 100}%` }}
-        ></div>
-      </div>
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-background text-foreground">
+      {/* TenantTool blue wash; SignalScene sets --tt as the section comes into view */}
+      <div className="tt-wash fixed inset-0 z-0" aria-hidden="true" />
+      {/* 3D scene fixed behind everything */}
+      <SignalScene className="fixed inset-0 z-0" />
 
-      {/* Section indicators - simplified */}
-      <div className="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50 hidden md:block">
-        {[0, 1, 2, 3].map((index) => (
-          <div 
-            key={index}
-            className="flex items-center my-4 cursor-pointer group"
-            onClick={() => scrollToSection(index)}
-          >
-            <div className="w-6 h-6 flex items-center justify-center">
-              <div 
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  activeSection === index 
-                    ? 'w-3 h-3 bg-white' 
-                    : 'bg-white/50 group-hover:bg-white/80'
-                }`}
-              ></div>
-            </div>
-            <span className="ml-2 text-xs font-light">
-              {index + 1}
-            </span>
-          </div>
-        ))}
-      </div>
+      <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-4 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60 sm:px-8">
+        <a href="/" className="transition-colors hover:text-foreground">Joefergraphy Ltd</a>
+        <a
+          href="/contact"
+          className="transition-colors hover:text-foreground"
+          onClick={() => trackButtonClick("Header contact link", "Header")}
+        >
+          Contact
+        </a>
+      </header>
 
-      {/* Service Modal - Updated for sleeker design */}
-      <AnimatePresence>
-        {selectedService && (
-          <motion.div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-0 sm:p-4"
+      <main className="relative z-10">
+        {/* Hero */}
+        <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 text-center">
+          <h1 className="font-display text-[11vw] font-medium leading-[0.85] tracking-[-0.06em] sm:text-[8vw] lg:text-[6.5rem]">
+            <Scramble text="JOEFERGRAPHY" delay={300} speed={45} />
+          </h1>
+          <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.5em] text-foreground/60">
+            <Scramble text="Limited" delay={1200} />
+          </p>
+
+          <motion.p
+            className="mt-10 max-w-sm text-sm leading-relaxed text-foreground/60"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            transition={{ delay: 1.8, duration: 1.2 }}
           >
-            <motion.div 
-              className="bg-black border border-white/10 w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-lg overflow-auto fixed inset-0 sm:relative custom-scrollbar"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ type: "spring", damping: 30 }}
-            >
-              <div className="flex justify-between items-center border-b border-white/10 p-5">
-                <h2 className="text-2xl font-light">{selectedService.title}</h2>
-                <button 
-                  onClick={closeModal} 
-                  className="text-white/70 hover:text-white transition-colors"
-                >
-                  <FiX size={24} />
-                </button>
-              </div>
-              
-              <div className="p-6">
-                <div className="mb-8">
-                  <h3 className="text-lg text-white/90 mb-4 font-light">What we offer</h3>
-                  <ul className="space-y-3">
-                    {selectedService.longDesc.map((desc, i) => (
-                      <motion.li 
-                        key={i} 
-                        className="flex items-start"
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 + 0.2 }}
-                      >
-                        <span className="text-white/30 mr-2">•</span>
-                        <span className="text-white/90">{desc}</span>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className="mb-6">
-                  <h3 className="text-lg text-white/90 mb-3 font-light">Technologies</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedService.techStack.map((tech, i) => (
-                      <motion.span
-                        key={i}
-                        className="px-3 py-1 bg-white/5 rounded-full text-sm text-white/80"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.05 + 0.5 }}
-                      >
-                        {tech}
-                      </motion.span>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="hidden">
-                  <div className="font-mono text-xs text-green-500">
-                    <pre>{typedText}</pre>
-                    <span className={showCursor ? 'opacity-100' : 'opacity-0'}>_</span>
-                  </div>
-                </div>
-                
-                <div className="mt-8 flex justify-center">
-                  <motion.a 
-                    href="/contact" 
-                    className="px-6 py-2.5 border border-white rounded-full text-sm font-light hover:bg-white hover:text-black transition-colors inline-flex items-center"
-                    whileHover={{ 
-                      scale: 1.03,
-                      transition: { duration: 0.2 }
-                    }}
-                    onClick={() => trackButtonClick(`Get started with ${selectedService.title}`, `Service: ${selectedService.title}`)}
-                  >
-                    Get started with {selectedService.title}
-                    <FiArrowRight className="ml-2" />
-                  </motion.a>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            A UK software company building focused tools for property and land.
+          </motion.p>
 
-      <main className="flex-grow flex flex-col items-center">
-        <div 
-          ref={addToRefs(0)}
-          className="h-screen w-full flex flex-col items-center justify-center px-4 relative"
-        >
-          <h1 
-            className={`text-5xl sm:text-6xl md:text-8xl font-bold tracking-tight transition-all duration-1500 ease-in-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} 
-            style={{ fontFamily: 'var(--font-playfair)', transitionDelay: '300ms' }}
+          <motion.a
+            href="#vision"
+            className="absolute bottom-8 font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/50 transition-colors hover:text-foreground"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.4, duration: 1 }}
+            onClick={() => trackButtonClick("Hero scroll prompt", "Scroll to vision")}
           >
-            Joefergraphy
-          </h1>
-          <p 
-            className={`text-lg sm:text-xl md:text-2xl font-light tracking-wide mt-2 transition-all duration-1500 ease-in-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-            style={{ transitionDelay: '600ms' }}
-          >
-            LIMITED
-          </p>
-          
-          {/* Scroll indicator */}
-          <motion.div 
-            className="absolute bottom-10 flex flex-col items-center cursor-pointer"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.5 }}
-            onClick={() => {
-              trackButtonClick('Scroll to discover', 'Hero section scroll indicator');
-              scrollToSection(1);
-            }}
-          >
-            <p className="text-sm font-light mb-2 text-white/70">Scroll to discover</p>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-            >
-              <FiChevronDown className="text-white/70 text-2xl" />
-            </motion.div>
-          </motion.div>
-        </div>
-        
-        <motion.div 
-          ref={addToRefs(1)}
-          className="min-h-screen w-full flex items-center justify-center px-4 py-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7 }}
-        >
-          <div className="max-w-3xl text-center">
-            <motion.h2 
-              className="text-3xl sm:text-4xl md:text-5xl font-light mb-6 md:mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-            >
-              Custom Web-Based Solutions
-            </motion.h2>
-            <motion.p 
-              className="text-base sm:text-lg md:text-xl font-light leading-relaxed mb-10"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.4 }}
-            >
-              For your business needs.
-            </motion.p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mt-8">
-              {services.map((service, index) => (
-                <motion.div 
-                  key={index}
-                  className="p-3 sm:p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
-                  initial={{ opacity: 0, y: 20 }}
+            Scroll
+          </motion.a>
+        </section>
+
+        {/* Vision: the mesh becomes a computer behind this section */}
+        <section id="vision" className="flex min-h-screen items-center justify-center px-4 py-20 text-center sm:px-8">
+          <motion.div {...fadeUp} className="legible mx-auto w-full max-w-4xl">
+            <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60">Our vision</p>
+            <h2 className="mx-auto max-w-2xl font-display text-3xl font-medium leading-[1.05] sm:text-[2.75rem]">
+              Professional, useful SaaS, built on next-generation technology.
+            </h2>
+            <div className="mt-14 grid gap-10 sm:grid-cols-3 sm:gap-8">
+              {principles.map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.2 + (index * 0.1) }}
-                  whileHover={{ 
-                    scale: 1.03, 
-                    borderColor: "rgba(255, 255, 255, 0.2)",
-                    transition: { duration: 0.2 }
-                  }}
-                  onClick={() => openServiceModal(service)}
+                  transition={{ delay: 0.15 + i * 0.1, duration: 0.6 }}
                 >
-                  <h3 className="text-lg md:text-xl font-light mb-2 sm:mb-3">{service.title}</h3>
-                  <p className="text-sm text-white/80">{service.desc}</p>
+                  <span className="font-mono text-[11px] text-foreground/45">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className="mt-2 text-lg font-medium">{item.title}</h3>
+                  <p className="mx-auto mt-2 max-w-xs text-[13px] leading-relaxed text-foreground/70">{item.body}</p>
                 </motion.div>
               ))}
             </div>
-          </div>
-        </motion.div>
-        
-        <motion.div 
-          ref={addToRefs(2)}
-          className="min-h-screen w-full flex items-center justify-center px-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7 }}
-        >
-          <div className="flex flex-col items-center">
-            <motion.h2 
-              className="text-2xl sm:text-3xl font-light mb-8 md:mb-10 text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+          </motion.div>
+        </section>
+
+        {/* TenantTool: the mesh becomes a key behind this section */}
+        <section id="tenanttool" className="flex min-h-screen items-center justify-center px-4 py-20 text-center sm:px-8">
+          <motion.div {...fadeUp} className="legible mx-auto flex w-full max-w-2xl flex-col items-center">
+            <p className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-tt">
+              Our product
+              <span className="flex items-center gap-2 text-foreground/60">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                Live
+              </span>
+            </p>
+            <h2 className="mt-5 font-display text-5xl font-medium sm:text-7xl">
+              <Scramble text="TenantTool" onView speed={40} />
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-snug text-foreground/90 sm:text-lg">
+              Every property, tenancy and deadline, in one workspace.
+            </p>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-foreground/70">
+              Property management software for UK landlords, farms and estates.
+            </p>
+            <a
+              href={TENANTTOOL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-9 inline-flex items-center gap-3 bg-tt px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-white [text-shadow:none] transition-colors hover:bg-tt-dark"
+              onClick={() => trackButtonClick("Visit TenantTool", `External link: ${TENANTTOOL_URL}`)}
             >
-              Our Bespoke Platforms
-            </motion.h2>
-            
-            {/* Consumer Solutions Section */}
-            <motion.h3
-              className="text-xl font-light mb-6 text-white/80"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.1 }}
+              Visit TenantTool
+              <FiArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </a>
+          </motion.div>
+        </section>
+
+        {/* Contact */}
+        <section className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
+          <motion.div {...fadeUp} className="flex flex-col items-center">
+            <h2 className="max-w-2xl font-display text-3xl font-medium leading-[1] sm:text-5xl">
+              Get in touch.
+            </h2>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-foreground/60">
+              Questions about TenantTool or working with us.
+            </p>
+            <a
+              href="/contact"
+              className="group mt-8 inline-flex items-center gap-3 border border-foreground/60 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors hover:bg-foreground hover:text-black"
+              onClick={() => trackButtonClick("Contact us", "Main CTA from homepage")}
             >
-              Consumer Solutions
-            </motion.h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-4xl mb-12">
-              <motion.div 
-                className="text-center"
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.2 }}
-              >
-                <h3 className="text-xl sm:text-2xl font-light mb-3 md:mb-4">
-                  Two Stopper
-                </h3>
-                <p className="font-light mb-5 md:mb-6 text-sm sm:text-base">
-                  Personalised SMS solution for consumers using public transport.
-                </p>
-                <motion.a 
-                  href="https://twostopper.co.uk/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="px-5 sm:px-6 py-2 border border-white rounded-full text-sm font-light hover:bg-white hover:text-black transition-colors inline-flex items-center"
-                  whileHover={{ 
-                    scale: 1.05,
-                    transition: { duration: 0.2 }
-                  }}
-                  onClick={() => trackButtonClick('Visit Two Stopper website', 'External link: https://twostopper.co.uk/')}
-                >
-                  Visit website
-                  <FiArrowRight className="ml-2" />
-                </motion.a>
-              </motion.div>
-              <motion.div 
-                className="text-center mt-8 md:mt-0"
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.4 }}
-              >
-                <h3 className="text-xl sm:text-2xl font-light mb-3 md:mb-4">
-                  Alertmove
-                </h3>
-                <p className="font-light mb-5 md:mb-6 text-sm sm:text-base">
-                  Advanced property alert system designed to streamline property transactions.
-                </p>
-                <span className="px-5 sm:px-6 py-2 border border-gray-600 rounded-full text-sm font-light text-gray-400 cursor-not-allowed inline-block">
-                  Under Development
-                </span>
-              </motion.div>
-              </div>
-            
-            {/* SaaS Solutions Section */}
-            <motion.h3
-              className="text-xl font-light mb-6 text-white/80"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-            >
-              SaaS Solutions
-            </motion.h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-4xl">
-              <motion.div 
-                className="text-center"
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.6 }}
-              >
-                <h3 className="text-xl sm:text-2xl font-light mb-3 md:mb-4">
-                  OpenResource
-                </h3>
-                <p className="font-light mb-5 md:mb-6 text-sm sm:text-base">
-                  3D organisational modelling tool for optimising resource allocation and management.
-                </p>
-                <span className="px-5 sm:px-6 py-2 border border-gray-600 rounded-full text-sm font-light text-gray-400 cursor-not-allowed inline-block">
-                  Under Development
-                </span>
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
-        
-        <motion.div 
-          ref={addToRefs(3)}
-          className="min-h-screen w-full flex items-center justify-center px-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7 }}
-        >
-          <div className="flex flex-col items-center text-center">
-            <motion.h2 
-              className="text-2xl sm:text-3xl font-light mb-6 md:mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-            >
-              Ready to transform your digital presence?
-            </motion.h2>
-            <motion.a 
-              href="/contact" 
-              className="px-6 sm:px-8 py-2.5 sm:py-3 border border-white rounded-full text-base sm:text-lg font-light hover:bg-white hover:text-black transition-colors inline-flex items-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              whileHover={{ 
-                scale: 1.05,
-                transition: { duration: 0.2 }
-              }}
-              onClick={() => trackButtonClick('Get in touch', 'Main CTA button from homepage')}
-            >
-              Get in touch
-              <FiArrowRight className="ml-2" />
-            </motion.a>
-          </div>
-        </motion.div>
+              Contact us
+              <FiArrowRight className="transition-transform group-hover:translate-x-0.5" />
+            </a>
+          </motion.div>
+        </section>
+
+        <footer className="flex flex-col items-center justify-between gap-2 px-4 py-6 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/35 sm:flex-row sm:px-8">
+          <span>&copy; {new Date().getFullYear()} Joefergraphy Limited</span>
+          <a href="mailto:contact@joefergraphy.co.uk" className="normal-case tracking-normal transition-colors hover:text-foreground">
+            contact@joefergraphy.co.uk
+          </a>
+        </footer>
       </main>
     </div>
   );

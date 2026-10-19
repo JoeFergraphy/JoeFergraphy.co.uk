@@ -1,14 +1,14 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
-const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair', display: 'swap' });
+const grotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-grotesk', display: 'swap' });
+const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'Joefergraphy Limited | Custom Web Development Solutions',
-  description: 'Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.',
-  keywords: ['web development', 'website design', 'SEO', 'e-commerce', 'web applications', 'UI/UX design', 'mobile optimisation', 'TwoStopper', 'Alertmove'],
+  title: 'Joefergraphy Limited',
+  description: 'Joefergraphy Limited builds software quietly. Currently operating TenantTool, property management software for UK landlords, farms and estates.',
+  keywords: ['Joefergraphy', 'TenantTool', 'property management software', 'landlord software', 'SaaS'],
   authors: [{ name: 'Joefergraphy Limited' }],
   creator: 'Joefergraphy Limited',
   publisher: 'Joefergraphy Limited',
@@ -51,8 +51,8 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     url: 'https://joefergraphy.co.uk',
     siteName: 'Joefergraphy Limited',
-    title: 'Joefergraphy Limited | Custom Web Development Solutions',
-    description: 'Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.',
+    title: 'Joefergraphy Limited',
+    description: 'Joefergraphy Limited builds software quietly. Currently operating TenantTool, property management software for UK landlords, farms and estates.',
     images: [
       {
         url: '/og-image.jpg',
@@ -64,8 +64,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Joefergraphy Limited | Custom Web Development Solutions',
-    description: 'Professional web development solutions for your business. Offering website design, SEO, e-commerce solutions, web applications, UI/UX design, and mobile optimisation.',
+    title: 'Joefergraphy Limited',
+    description: 'Joefergraphy Limited builds software quietly. Currently operating TenantTool, property management software for UK landlords, farms and estates.',
     images: ['/og-image.jpg'],
   },
   verification: {
@@ -94,7 +94,7 @@ export default function RootLayout({
               "name": "Joefergraphy Limited",
               "url": "https://joefergraphy.co.uk",
               "logo": "https://joefergraphy.co.uk/favicon/JF-512x512.png",
-              "description": "Professional web development solutions for your business",
+              "description": "Software company behind TenantTool",
               "sameAs": [
                 // Add your social media profiles here when available
               ],
@@ -106,7 +106,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased custom-scrollbar`}>
+      <body className={`${grotesk.variable} ${jetbrains.variable} font-sans antialiased`}>
+        <div className="vignette" aria-hidden="true" />
         {children}
       </body>
     </html>
