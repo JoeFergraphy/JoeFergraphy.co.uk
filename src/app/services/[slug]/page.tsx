@@ -173,11 +173,8 @@ export default async function ServicePage({ params }: Props) {
             <div>
               <h3 className="text-base font-medium">We run a SaaS in production</h3>
               <p className="mt-2 text-sm leading-relaxed text-foreground/60">
-                We build and operate{" "}
-                <a href="https://tenanttool.co.uk/" className="text-foreground/85 underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground">
-                  TenantTool
-                </a>
-                , so we design for the realities of live software: reliability, security and support.
+                We develop and operate our own in-house SaaS products, so we design for the realities of live software:
+                reliability, security and support.
               </p>
             </div>
             <div>

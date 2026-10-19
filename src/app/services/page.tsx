@@ -73,11 +73,8 @@ export default function ServicesPage() {
               long after launch.
             </p>
             <p>
-              We also build and run our own product,{" "}
-              <a href="https://tenanttool.co.uk/" className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground">
-                TenantTool
-              </a>
-              , so every client project benefits from first-hand experience of operating software in production.
+              We also develop and run our own in-house SaaS products, so every client project benefits from first-hand
+              experience of operating software in production.
             </p>
           </div>
         </section>

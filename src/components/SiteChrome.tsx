@@ -21,7 +21,7 @@ export function SiteFooter() {
         <div>
           <p className="font-display text-lg font-medium">Joefergraphy Limited</p>
           <p className="mt-2 max-w-xs text-sm leading-relaxed text-foreground/55">
-            UK software company. Specialist software development and makers of TenantTool.
+            UK software company. Specialist software development and in-house SaaS products.
           </p>
         </div>
         <nav aria-label="Services">
@@ -39,9 +39,6 @@ export function SiteFooter() {
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-foreground/40">Company</p>
           <ul className="mt-3 space-y-2 text-sm">
-            <li>
-              <a href="https://tenanttool.co.uk/" className="text-foreground/65 transition-colors hover:text-foreground">TenantTool</a>
-            </li>
             <li>
               <a href="/contact/?enquiry=custom" className="text-foreground/65 transition-colors hover:text-foreground">Request custom software</a>
             </li>

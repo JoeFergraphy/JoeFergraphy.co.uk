@@ -54,12 +54,12 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     url: 'https://joefergraphy.co.uk',
     siteName: 'Joefergraphy Limited',
-    title: 'Joefergraphy | Specialist Software Development Company UK',
+    title: 'UK Software Development',
     description: 'Joefergraphy is a UK software company offering specialist software development: custom software, SaaS products, web applications and AI integration. Makers of TenantTool.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Joefergraphy | Specialist Software Development Company UK',
+    title: 'UK Software Development',
     description: 'Joefergraphy is a UK software company offering specialist software development: custom software, SaaS products, web applications and AI integration. Makers of TenantTool.',
   },
   verification: {
@@ -88,7 +88,7 @@ export default function RootLayout({
               "name": "Joefergraphy Limited",
               "url": "https://joefergraphy.co.uk",
               "logo": "https://joefergraphy.co.uk/favicon/JF-512x512.png",
-              "description": "UK software company offering specialist software development and makers of TenantTool",
+              "description": "UK software company offering specialist software development and in-house SaaS products",
               "areaServed": "GB",
               "knowsAbout": ["Custom software development", "SaaS development", "Web application development", "Business process automation", "AI integration", "Property software"],
               "sameAs": [

@@ -50,7 +50,7 @@ export const services: Service[] = [
     summary: "Bespoke systems shaped around how your business actually works.",
     intro: [
       "Off-the-shelf software is built for the average customer. When your processes are what make you different, forcing them into a generic product costs time every single day. Custom software removes that friction: it does exactly what your team needs, nothing it does not, and it grows with you.",
-      "Joefergraphy is a UK software company. We design, build and support bespoke software for businesses that have outgrown spreadsheets, stitched-together tools or legacy systems. We also build and run our own SaaS product, TenantTool, so we know what it takes to keep real software reliable once people depend on it.",
+      "Joefergraphy is a UK software company. We design, build and support bespoke software for businesses that have outgrown spreadsheets, stitched-together tools or legacy systems. We also develop and run our own in-house SaaS products, so we know what it takes to keep real software reliable once people depend on it.",
     ],
     problems: [
       {
@@ -127,7 +127,7 @@ export const services: Service[] = [
     summary: "Subscription products taken from idea to paying customers.",
     intro: [
       "Building a SaaS product is more than writing features. Accounts, permissions, billing, onboarding, email, reliability and support all have to work from the first paying customer. Getting those foundations right early is the difference between a product that scales and one that has to be rebuilt.",
-      "We build and operate our own SaaS product, TenantTool, which is used by UK landlords, farms and estates. That experience shapes how we build for clients: we design for multiple customers from day one, keep running costs sensible, and make the product easy to change as you learn what your market wants.",
+      "We develop and operate our own in-house SaaS products. That experience shapes how we build for clients: we design for multiple customers from day one, keep running costs sensible, and make the product easy to change as you learn what your market wants.",
     ],
     problems: [
       {
@@ -173,7 +173,7 @@ export const services: Service[] = [
       },
       {
         q: "Do you have experience running SaaS in production?",
-        a: "Yes. We build and run TenantTool, our own property management SaaS for UK landlords. We deal with the same questions of reliability, billing and support that your product will face.",
+        a: "Yes. We develop and run our own in-house SaaS products, so we deal with the same questions of reliability, billing and support that your product will face.",
       },
       {
         q: "Can you take over an existing SaaS codebase?",
@@ -358,7 +358,7 @@ export const services: Service[] = [
     summary: "Practical AI features built into the software you rely on.",
     intro: [
       "Modern AI models are genuinely good at reading documents, drafting text, answering questions and pulling structure out of messy information. Used well, they remove hours of work. Used badly, they produce confident mistakes. The difference is in how they are built into your software.",
-      "We add AI where it earns its place: grounded in your own records, with clear limits, and checked by people where it matters. Our own product, TenantTool, includes an assistant that answers questions from a landlord's records, so we build these features with production experience behind us.",
+      "We add AI where it earns its place: grounded in your own records, with clear limits, and checked by people where it matters. We use AI features in our own in-house SaaS products, so we build them with production experience behind us.",
     ],
     problems: [
       {
@@ -421,7 +421,7 @@ export const services: Service[] = [
     slug: "property-software-development",
     metaTitle: "Property & PropTech Software Development UK",
     metaDescription:
-      "Specialist property software development in the UK. Bespoke PropTech for landlords, letting agents and estates, from the team behind TenantTool.",
+      "Specialist property software development in the UK. Bespoke PropTech for landlords, letting agents and estates, from a team that runs its own property SaaS.",
     keywords: [
       "property software development UK",
       "PropTech development UK",
@@ -430,12 +430,12 @@ export const services: Service[] = [
       "estate management software",
     ],
     eyebrow: "Property software development",
-    h1: "Property software from the team behind TenantTool.",
+    h1: "Specialist property software for landlords, agents and estates.",
     name: "Property software development",
     summary: "Specialist PropTech for landlords, agents and estates.",
     intro: [
       "Property is full of dates, documents and obligations: gas safety, electrical and energy certificates, deposits, tenancies, notices and repairs. Generic software rarely handles the detail, and the cost of missing something is high.",
-      "We built TenantTool, property management software for UK landlords, farms and estates, so we know this sector's requirements in depth. We use that experience to build bespoke property software for organisations whose needs go beyond an off-the-shelf product.",
+      "We develop and run our own in-house property management SaaS, so we know this sector's requirements in depth. We use that experience to build bespoke property software for organisations whose needs go beyond an off-the-shelf product.",
     ],
     problems: [
       {
@@ -476,12 +476,12 @@ export const services: Service[] = [
     stack: ["TypeScript", "Next.js", "PostgreSQL", "Xero", "Stripe", "Calendar sync", "Document processing"],
     faqs: [
       {
-        q: "Should we use TenantTool or have something built?",
-        a: "If your needs fit a landlord, farm or estate portfolio, TenantTool may already do the job. If you need something specific to your organisation, we can build bespoke software or extend what exists.",
+        q: "Should we buy off-the-shelf software or have something built?",
+        a: "If an existing product genuinely fits your portfolio, it is often the quickest option. If you need something specific to your organisation, we can build bespoke software or extend what you already use.",
       },
       {
         q: "Do you understand UK property compliance?",
-        a: "Yes. Building TenantTool meant working through UK requirements around safety certificates, deposits, tenancies and notice periods in detail.",
+        a: "Yes. Building our own property SaaS meant working through UK requirements around safety certificates, deposits, tenancies and notice periods in detail.",
       },
       {
         q: "Can you build software for letting agents?",
