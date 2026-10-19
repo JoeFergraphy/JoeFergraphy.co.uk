@@ -36,8 +36,6 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-background text-foreground">
-      {/* TenantTool blue wash; SignalScene sets --tt as the section comes into view */}
-      <div className="tt-wash fixed inset-0 z-0" aria-hidden="true" />
       {/* 3D scene fixed behind everything */}
       <SignalScene className="fixed inset-0 z-0" />
 
@@ -112,31 +110,26 @@ export default function Home() {
           </motion.div>
         </section>
 
-        {/* TenantTool: the mesh becomes a key in the gap between the two halves */}
+        {/* TenantTool: the mesh becomes a key between the name and the link */}
         <section id="tenanttool" className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 py-16 text-center sm:px-8">
-          <motion.div {...fadeUp} className="legible flex flex-col items-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#a9c9f5]">Our product</p>
-            <h2 className="mt-4 bg-linear-to-b from-white from-40% to-[#8fb8ee] bg-clip-text font-display text-6xl font-medium tracking-[-0.05em] text-transparent [text-shadow:none] sm:text-8xl">
-              TenantTool
-            </h2>
-            <p className="mt-3 text-sm text-foreground/75 sm:text-base">Property management for UK landlords.</p>
-          </motion.div>
+          <motion.h2 {...fadeUp} className="legible font-display text-3xl font-medium sm:text-4xl">
+            TenantTool
+          </motion.h2>
 
           {/* The key sits here */}
-          <div className="h-[30vh] sm:h-[34vh]" aria-hidden="true" />
+          <div className="h-[34vh] sm:h-[38vh]" aria-hidden="true" />
 
-          <motion.div {...fadeUp}>
-            <a
-              href={TENANTTOOL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 rounded-full bg-tt px-6 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-white shadow-[0_0_40px_-8px_rgba(74,143,231,0.8)] transition-colors hover:bg-tt-dark"
-              onClick={() => trackButtonClick("Visit TenantTool", `External link: ${TENANTTOOL_URL}`)}
-            >
-              Visit TenantTool
-              <FiArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </a>
-          </motion.div>
+          <motion.a
+            {...fadeUp}
+            href={TENANTTOOL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="legible group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-foreground/70 transition-colors hover:text-foreground"
+            onClick={() => trackButtonClick("Visit TenantTool", `External link: ${TENANTTOOL_URL}`)}
+          >
+            tenanttool.co.uk
+            <FiArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </motion.a>
         </section>
 
         {/* Custom software requests */}

@@ -6,7 +6,6 @@
   --signal: #ff3b2f;
   --tt-blue: #4a8fe7;
   --tt-blue-dark: #2762b0;
-  --tt: 0;
   scroll-behavior: smooth;
 }
 
@@ -43,15 +42,6 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
   letter-spacing: -0.04em;
-}
-
-/* TenantTool blue wash, faded in by SignalScene via --tt */
-.tt-wash {
-  pointer-events: none;
-  opacity: var(--tt);
-  background:
-    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(74, 143, 231, 0.38), transparent 70%),
-    linear-gradient(180deg, #06142b 0%, #0b2347 50%, #06142b 100%);
 }
 
 /* Keeps copy readable where it sits over the mesh */

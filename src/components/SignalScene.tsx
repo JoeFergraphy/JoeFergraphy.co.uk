@@ -104,7 +104,7 @@ void main() {
 
 const POINT_COUNT = 60000;
 
-// TenantTool brand blue, lifted so the key stands out against the blue wash
+// TenantTool brand blue, lifted slightly so the key reads on black
 const TENANTTOOL_BLUE = new THREE.Color("#4a8fe7").lerp(new THREE.Color("#ffffff"), 0.35);
 
 // Mesh colour stops, blended by how far down the page you are
@@ -311,7 +311,6 @@ export default function SignalScene({ className = "" }: { className?: string }) 
         coreUniforms.uWordY.value = -(rect.top + scrollY + rect.height / 2 - window.innerHeight / 2) * worldPerPx;
       }
       coreUniforms.uSolid.value = morph;
-      root.style.setProperty("--tt", key.toFixed(3));
 
       // Ease the colour towards the scroll position so it never jumps
       const maxScroll = Math.max(1, root.scrollHeight - window.innerHeight);
@@ -363,7 +362,6 @@ export default function SignalScene({ className = "" }: { className?: string }) 
         if (Array.isArray(m)) m.forEach((x) => x.dispose());
         else m?.dispose();
       });
-      root.style.removeProperty("--tt");
       renderer.dispose();
       mount.removeChild(renderer.domElement);
     };
