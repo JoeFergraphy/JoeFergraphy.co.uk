@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { fibonacciSphere, keyShape, computerShape, spatialOrder, pairWith } from "./shapes";
+import { fibonacciSphere, keyShape, computerShape, wordShape, spatialOrder, pairWith } from "./shapes";
 
 // Ashima Arts 3D simplex noise (MIT)
 const noiseGLSL = /* glsl */ `
@@ -58,8 +58,12 @@ const coreVertex = /* glsl */ `
 uniform float uTime;
 uniform float uComputer;
 uniform float uKey;
+uniform float uWord;
+uniform float uWordScale;
+uniform float uWordY;
 attribute vec3 aComputer;
 attribute vec3 aKey;
+attribute vec3 aWord;
 varying float vNoise;
 ${noiseGLSL}
 void main() {
@@ -69,6 +73,9 @@ void main() {
           + snoise(dir * 1.8 - vec3(uTime * 0.04)) * 0.25;
   vNoise = n;
   vec3 p = position + dir * n * 0.3;
+  // The wordmark is stored one unit wide and sized to the heading on screen
+  vec3 word = aWord * uWordScale + vec3(0.0, uWordY, 0.0);
+  p = mix(p, word + dir * n * 0.04, uWord);
   // Shapes keep a faint shimmer so they never look frozen
   p = mix(p, aComputer + dir * n * 0.015, uComputer);
   p = mix(p, aKey + dir * n * 0.015, uKey);
@@ -89,7 +96,7 @@ void main() {
   if (d > 0.25) discard;
   float soft = 1.0 - smoothstep(0.1, 0.25, d);
   // Shapes read better evenly lit than with the sphere's noise shading
-  float a = mix(0.3 + smoothstep(-0.5, 0.7, vNoise) * 0.7, 0.75, uSolid) * soft;
+  float a = mix(0.3 + smoothstep(-0.5, 0.7, vNoise) * 0.7, 1.0, uSolid) * soft;
   vec3 col = mix(uColor * 0.45, mix(uColor, vec3(1.0), 0.35), smoothstep(-0.2, 0.8, vNoise));
   gl_FragColor = vec4(col, a);
 }
@@ -97,8 +104,8 @@ void main() {
 
 const POINT_COUNT = 60000;
 
-// TenantTool brand blue, used when the TenantTool section is in view
-const TENANTTOOL_BLUE = new THREE.Color("#4a8fe7");
+// TenantTool brand blue, lifted so the key stands out against the blue wash
+const TENANTTOOL_BLUE = new THREE.Color("#4a8fe7").lerp(new THREE.Color("#ffffff"), 0.35);
 
 // Mesh colour stops, blended by how far down the page you are
 const PALETTE = ["#d6e2ff", "#5eead4", "#a78bfa", "#f5b971"].map((c) => new THREE.Color(c));
@@ -159,8 +166,12 @@ export default function SignalScene({ className = "" }: { className?: string }) 
     coreGeo.setAttribute("position", new THREE.BufferAttribute(sphere, 3));
     coreGeo.setAttribute("aComputer", new THREE.BufferAttribute(pairWith(order, computerShape(POINT_COUNT)), 3));
     coreGeo.setAttribute("aKey", new THREE.BufferAttribute(pairWith(order, keyShape(POINT_COUNT)), 3));
+    coreGeo.setAttribute("aWord", new THREE.BufferAttribute(new Float32Array(sphere.length), 3));
     const coreUniforms = {
       uTime: { value: 0 },
+      uWord: { value: 0 },
+      uWordScale: { value: 1 },
+      uWordY: { value: 0 },
       uComputer: { value: 0 },
       uKey: { value: 0 },
       uSolid: { value: 0 },
@@ -220,6 +231,25 @@ export default function SignalScene({ className = "" }: { className?: string }) 
     );
     scene.add(dust);
 
+    // The wordmark is sampled from the heading's own font once it has loaded
+    const heading = document.getElementById("wordmark");
+    let wordReady = false;
+    let wordWidthPerEm = 1;
+    let cancelled = false;
+    if (heading) {
+      document.fonts.ready.then(() => {
+        if (cancelled) return;
+        const style = getComputedStyle(heading);
+        const fontSize = parseFloat(style.fontSize);
+        const spacing = (parseFloat(style.letterSpacing) || 0) / fontSize;
+        const word = wordShape("JOEFERGRAPHY", style.fontWeight, style.fontFamily, spacing, POINT_COUNT);
+        if (!word) return;
+        coreGeo.setAttribute("aWord", new THREE.BufferAttribute(pairWith(order, word.points), 3));
+        wordWidthPerEm = word.widthPerEm;
+        wordReady = true;
+      });
+    }
+
     const resize = () => {
       const w = Math.max(1, mount.clientWidth);
       const h = Math.max(1, mount.clientHeight);
@@ -252,18 +282,34 @@ export default function SignalScene({ className = "" }: { className?: string }) 
     const root = document.documentElement;
     let computer = 0;
     let key = 0;
+    let word = 0;
     let frame = 0;
 
     const render = () => {
-      const t = clock.getElapsedTime();
+      const dt = Math.min(clock.getDelta(), 0.1);
+      const t = clock.elapsedTime;
       coreUniforms.uTime.value = t;
 
-      const ease = reduceMotion ? 1 : 0.045;
+      // Time-based easing so morphs take the same time at any frame rate
+      const rate = (perSecond: number) => (reduceMotion ? 1 : 1 - Math.exp(-perSecond * dt));
+      const ease = rate(2.8);
       computer += (sectionFocus("vision") - computer) * ease;
       key += (sectionFocus("tenanttool") - key) * ease;
-      const morph = Math.min(1, computer + key);
+      word += ((wordReady ? Math.max(sectionFocus("hero"), sectionFocus("outro")) : 0) - word) * rate(1.8);
+      const morph = Math.min(1, computer + key + word);
       coreUniforms.uComputer.value = computer;
       coreUniforms.uKey.value = key;
+      coreUniforms.uWord.value = word;
+
+      // Size and place the wordmark to sit just behind the heading at its resting position
+      const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
+      const worldPerPx = (halfH * 2) / window.innerHeight;
+      if (heading) {
+        const rect = heading.getBoundingClientRect();
+        const fontSize = parseFloat(getComputedStyle(heading).fontSize);
+        coreUniforms.uWordScale.value = wordWidthPerEm * fontSize * worldPerPx * 1.04;
+        coreUniforms.uWordY.value = -(rect.top + scrollY + rect.height / 2 - window.innerHeight / 2) * worldPerPx;
+      }
       coreUniforms.uSolid.value = morph;
       root.style.setProperty("--tt", key.toFixed(3));
 
@@ -271,7 +317,7 @@ export default function SignalScene({ className = "" }: { className?: string }) 
       const maxScroll = Math.max(1, root.scrollHeight - window.innerHeight);
       colourAt(scrollY / maxScroll, targetColour).lerp(TENANTTOOL_BLUE, key);
       const colour = coreUniforms.uColor.value;
-      colour.lerp(targetColour, reduceMotion ? 1 : 0.05);
+      colour.lerp(targetColour, rate(3));
       shellMat.color.copy(colour);
       shellMat.opacity = 0.14 * (1 - morph);
       rings.forEach((r, i) => {
@@ -284,14 +330,17 @@ export default function SignalScene({ className = "" }: { className?: string }) 
       pointer.y += (pointer.ty - pointer.y) * 0.03;
 
       // Shapes face the viewer with a gentle turn; the mesh itself stays centred.
+      // The wordmark faces straight on so it lines up with the heading.
       // The free spin is matched to the nearest equivalent angle so it never unwinds.
+      const total = Math.max(morph, 1e-3);
       const spin = t * 0.05;
-      const sway = Math.sin(t * 0.3) * 0.15 - 0.2;
+      const sway = ((Math.sin(t * 0.3) * 0.15 - 0.2) * (computer + key)) / total;
       const facing = sway + TAU * Math.round((spin - sway) / TAU);
-      group.rotation.y = THREE.MathUtils.lerp(spin, facing, morph) + pointer.x * 0.3;
-      const tilt = THREE.MathUtils.lerp(0.32, 0.08, key / Math.max(morph, 1e-3));
-      group.rotation.x = THREE.MathUtils.lerp(pointer.y * 0.2 + scrollY * 0.0002, tilt + pointer.y * 0.08, morph);
-      group.scale.setScalar(1 + computer * 0.12 - key * 0.12);
+      const parallax = THREE.MathUtils.lerp(0.3, 0.1, word / total);
+      group.rotation.y = THREE.MathUtils.lerp(spin, facing, morph) + pointer.x * parallax;
+      const tilt = (computer * 0.32 + key * 0.08) / total;
+      group.rotation.x = THREE.MathUtils.lerp(pointer.y * 0.2 + scrollY * 0.0002, tilt + pointer.y * parallax * 0.3, morph);
+      group.scale.setScalar(1 + computer * 0.12 + key * 0.15);
       shell.rotation.z = -t * 0.03;
       rings.forEach((r, i) => (r.rotation.z = t * (0.04 + i * 0.02) * (i % 2 ? -1 : 1)));
       dust.rotation.y = t * 0.008;
@@ -302,6 +351,7 @@ export default function SignalScene({ className = "" }: { className?: string }) 
     render();
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onPointer);

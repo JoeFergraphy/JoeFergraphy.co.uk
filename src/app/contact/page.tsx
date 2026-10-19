@@ -6,7 +6,17 @@ import { FiArrowRight, FiCheck, FiX } from 'react-icons/fi';
 import { trackPageView, trackFormInteraction, trackButtonClick } from '@/utils/analytics';
 import Scramble from '@/components/Scramble';
 
+const ENQUIRY_TYPES = [
+  { id: 'custom', label: 'Custom software', placeholder: 'What would you like built, who is it for, and is there a deadline or budget in mind?' },
+  { id: 'tenanttool', label: 'TenantTool', placeholder: 'How can we help with TenantTool?' },
+  { id: 'general', label: 'General', placeholder: '' },
+] as const;
+
+type EnquiryType = (typeof ENQUIRY_TYPES)[number]['id'];
+
 export default function ContactForm() {
+  const [enquiry, setEnquiry] = useState<EnquiryType>('general');
+  const enquiryType = ENQUIRY_TYPES.find((t) => t.id === enquiry) ?? ENQUIRY_TYPES[2];
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,6 +31,10 @@ export default function ContactForm() {
   useEffect(() => {
     // Track contact page view
     trackPageView("Contact Form");
+
+    // Links such as /contact?enquiry=custom preselect the enquiry type
+    const requested = new URLSearchParams(window.location.search).get('enquiry');
+    if (ENQUIRY_TYPES.some((t) => t.id === requested)) setEnquiry(requested as EnquiryType);
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -55,13 +69,14 @@ export default function ContactForm() {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
+          enquiry: enquiryType.label,
           name: formData.name,
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
           // These are Formspree-specific fields
           _replyto: formData.email,
-          _subject: `Contact Form: ${formData.subject}`
+          _subject: `[${enquiryType.label}] ${formData.subject}`
         }),
       });
       
@@ -139,7 +154,7 @@ export default function ContactForm() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
           >
-            <Scramble text="Get in touch" delay={200} />
+            <Scramble text={enquiry === 'custom' ? 'Request custom software' : 'Get in touch'} delay={200} />
           </motion.h1>
           
           <motion.p 
@@ -148,7 +163,9 @@ export default function ContactForm() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            Tell us what you need and we will get back to you.
+            {enquiry === 'custom'
+              ? 'Describe the problem you want solved. We will reply with questions or a proposed approach and a quote.'
+              : 'Tell us what you need and we will get back to you.'}
           </motion.p>
           
           {submitStatus === 'success' ? (
@@ -179,6 +196,30 @@ export default function ContactForm() {
               initial="hidden"
               animate="visible"
             >
+              <motion.fieldset variants={itemVariants}>
+                <legend className={labelClass}>Enquiry</legend>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {ENQUIRY_TYPES.map((type) => (
+                    <button
+                      key={type.id}
+                      type="button"
+                      aria-pressed={enquiry === type.id}
+                      onClick={() => {
+                        setEnquiry(type.id);
+                        trackFormInteraction('Contact Form', `chose ${type.label} enquiry`);
+                      }}
+                      className={`border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                        enquiry === type.id
+                          ? 'border-foreground bg-foreground text-black'
+                          : 'border-foreground/25 text-foreground/70 hover:border-foreground/60'
+                      }`}
+                    >
+                      {type.label}
+                    </button>
+                  ))}
+                </div>
+              </motion.fieldset>
+
               <motion.div variants={itemVariants}>
                 <label htmlFor="name" className={labelClass}>Name</label>
                 <input
@@ -223,7 +264,8 @@ export default function ContactForm() {
                 <textarea
                   id="message"
                   name="message"
-                  rows={5}
+                  rows={enquiry === 'custom' ? 7 : 5}
+                  placeholder={enquiryType.placeholder}
                   value={formData.message}
                   onChange={handleChange}
                   required

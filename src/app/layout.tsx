@@ -7,7 +7,7 @@ const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrai
 
 export const metadata: Metadata = {
   title: 'Joefergraphy Limited',
-  description: 'Joefergraphy Limited builds software quietly. Currently operating TenantTool, property management software for UK landlords, farms and estates.',
+  description: 'Joefergraphy Limited is a UK software company. Makers of TenantTool, property management software for UK landlords, farms and estates, and builders of custom software.',
   keywords: ['Joefergraphy', 'TenantTool', 'property management software', 'landlord software', 'SaaS'],
   authors: [{ name: 'Joefergraphy Limited' }],
   creator: 'Joefergraphy Limited',
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     url: 'https://joefergraphy.co.uk',
     siteName: 'Joefergraphy Limited',
     title: 'Joefergraphy Limited',
-    description: 'Joefergraphy Limited builds software quietly. Currently operating TenantTool, property management software for UK landlords, farms and estates.',
+    description: 'Joefergraphy Limited is a UK software company. Makers of TenantTool, property management software for UK landlords, farms and estates, and builders of custom software.',
     images: [
       {
         url: '/og-image.jpg',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Joefergraphy Limited',
-    description: 'Joefergraphy Limited builds software quietly. Currently operating TenantTool, property management software for UK landlords, farms and estates.',
+    description: 'Joefergraphy Limited is a UK software company. Makers of TenantTool, property management software for UK landlords, farms and estates, and builders of custom software.',
     images: ['/og-image.jpg'],
   },
   verification: {

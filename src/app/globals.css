@@ -56,7 +56,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Keeps copy readable where it sits over the mesh */
 .legible {
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7), 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Darkens the edges of the 3D scene */

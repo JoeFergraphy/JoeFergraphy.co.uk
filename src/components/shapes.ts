@@ -211,3 +211,62 @@ export function pairWith(sourceOrder: number[], target: Float32Array) {
   }
   return out;
 }
+
+// A word drawn in the given font, as a shallow extruded cloud one unit wide.
+// A share of points drifts loose around the letters so the edges read as dissolving.
+// `widthPerEm` is the inked width divided by the font size, for matching it to real text.
+export function wordShape(text: string, weight: string, family: string, letterSpacingEm: number, count: number) {
+  const size = 200;
+  const canvas = document.createElement("canvas");
+  canvas.width = 2400;
+  canvas.height = 400;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return null;
+  ctx.font = `${weight} ${size}px ${family}`;
+  if ("letterSpacing" in ctx) (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = `${letterSpacingEm * size}px`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "#fff";
+  ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+  const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const filled: number[] = [];
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (let y = 0; y < canvas.height; y++) {
+    for (let x = 0; x < canvas.width; x++) {
+      if (data[(y * canvas.width + x) * 4 + 3] > 128) {
+        filled.push(x, y);
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (!filled.length) return null;
+
+  const width = maxX - minX;
+  const cx = (minX + maxX) / 2;
+  const cy = (minY + maxY) / 2;
+  const depth = 0.03;
+  const out = new Float32Array(count * 3);
+  const pixels = filled.length / 2;
+  for (let i = 0; i < count; i++) {
+    const p = Math.floor(Math.random() * pixels) * 2;
+    let x = (filled[p] + Math.random() - cx) / width;
+    let y = -(filled[p + 1] + Math.random() - cy) / width;
+    let z = rand(-depth, depth);
+    if (i % 9 === 0) {
+      // Loose particles around the glyphs
+      const spread = 0.02 + Math.random() * 0.05;
+      const a = Math.random() * TAU;
+      x += Math.cos(a) * spread;
+      y += Math.sin(a) * spread * 0.7;
+      z = rand(-0.12, 0.12);
+    }
+    out[i * 3] = x;
+    out[i * 3 + 1] = y;
+    out[i * 3 + 2] = z;
+  }
+  return { points: out, widthPerEm: width / size };
+}
