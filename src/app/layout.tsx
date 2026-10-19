@@ -6,9 +6,12 @@ const grotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-grotesk', 
 const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'Joefergraphy Limited',
-  description: 'Joefergraphy Limited is a UK software company. Makers of TenantTool, property management software for UK landlords, farms and estates, and builders of custom software.',
-  keywords: ['Joefergraphy', 'TenantTool', 'property management software', 'landlord software', 'SaaS'],
+  title: {
+    default: 'Joefergraphy | Specialist Software Development Company UK',
+    template: '%s | Joefergraphy',
+  },
+  description: 'Joefergraphy is a UK software company offering specialist software development: custom software, SaaS products, web applications and AI integration. Makers of TenantTool.',
+  keywords: ['software development company UK', 'specialist software development', 'custom software development UK', 'bespoke software UK', 'SaaS development UK', 'Joefergraphy', 'TenantTool'],
   authors: [{ name: 'Joefergraphy Limited' }],
   creator: 'Joefergraphy Limited',
   publisher: 'Joefergraphy Limited',
@@ -18,7 +21,7 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL('https://joefergraphy.co.uk'),
   alternates: {
-    canonical: 'https://joefergraphy.co.uk',
+    canonical: 'https://joefergraphy.co.uk/',
   },
   robots: {
     index: true,
@@ -51,8 +54,8 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     url: 'https://joefergraphy.co.uk',
     siteName: 'Joefergraphy Limited',
-    title: 'Joefergraphy Limited',
-    description: 'Joefergraphy Limited is a UK software company. Makers of TenantTool, property management software for UK landlords, farms and estates, and builders of custom software.',
+    title: 'Joefergraphy | Specialist Software Development Company UK',
+    description: 'Joefergraphy is a UK software company offering specialist software development: custom software, SaaS products, web applications and AI integration. Makers of TenantTool.',
     images: [
       {
         url: '/og-image.jpg',
@@ -64,8 +67,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Joefergraphy Limited',
-    description: 'Joefergraphy Limited is a UK software company. Makers of TenantTool, property management software for UK landlords, farms and estates, and builders of custom software.',
+    title: 'Joefergraphy | Specialist Software Development Company UK',
+    description: 'Joefergraphy is a UK software company offering specialist software development: custom software, SaaS products, web applications and AI integration. Makers of TenantTool.',
     images: ['/og-image.jpg'],
   },
   verification: {
@@ -94,7 +97,9 @@ export default function RootLayout({
               "name": "Joefergraphy Limited",
               "url": "https://joefergraphy.co.uk",
               "logo": "https://joefergraphy.co.uk/favicon/JF-512x512.png",
-              "description": "Software company behind TenantTool",
+              "description": "UK software company offering specialist software development and makers of TenantTool",
+              "areaServed": "GB",
+              "knowsAbout": ["Custom software development", "SaaS development", "Web application development", "Business process automation", "AI integration", "Property software"],
               "sameAs": [
                 // Add your social media profiles here when available
               ],

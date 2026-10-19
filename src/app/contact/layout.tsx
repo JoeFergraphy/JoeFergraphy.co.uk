@@ -1,16 +1,16 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Joefergraphy Limited',
-  description: 'Get in touch with Joefergraphy Limited. Establish contact.',
+  title: 'Contact Us',
+  description: 'Contact Joefergraphy about custom software development, SaaS products or TenantTool. UK software company.',
   keywords: ['contact', 'Joefergraphy', 'TenantTool'],
   alternates: {
-    canonical: 'https://joefergraphy.co.uk/contact',
+    canonical: 'https://joefergraphy.co.uk/contact/',
   },
   openGraph: {
     title: 'Contact Us | Joefergraphy Limited',
-    description: 'Get in touch with Joefergraphy Limited. Establish contact.',
-    url: 'https://joefergraphy.co.uk/contact',
+    description: 'Contact Joefergraphy about custom software development, SaaS products or TenantTool. UK software company.',
+    url: 'https://joefergraphy.co.uk/contact/',
     images: [
       {
         url: '/og-image.jpg',
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     title: 'Contact Us | Joefergraphy Limited',
-    description: 'Get in touch with Joefergraphy Limited. Establish contact.',
+    description: 'Contact Joefergraphy about custom software development, SaaS products or TenantTool. UK software company.',
     images: ['/og-image.jpg'],
   },
 };
@@ -42,10 +42,10 @@ export default function ContactLayout({
             "@context": "https://schema.org",
             "@type": "ContactPage",
             "name": "Contact Joefergraphy Limited",
-            "description": "Get in touch with Joefergraphy Limited. Establish contact.",
+            "description": "Contact Joefergraphy about custom software development, SaaS products or TenantTool. UK software company.",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://joefergraphy.co.uk/contact"
+              "@id": "https://joefergraphy.co.uk/contact/"
             },
             "provider": {
               "@type": "Organization",

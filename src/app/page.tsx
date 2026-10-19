@@ -16,10 +16,10 @@ const principles = [
 ];
 
 const offerings = [
-  { title: "Internal tools", body: "Dashboards and systems that replace spreadsheets and manual admin." },
-  { title: "Client portals", body: "Secure places for customers to log in, see their records and get things done." },
-  { title: "Automation", body: "Integrations between the tools you already use, so work moves without copy and paste." },
-  { title: "SaaS products", body: "Complete products, from first prototype to launch and beyond." },
+  { title: "Internal tools", href: "/services/custom-software-development/", body: "Dashboards and systems that replace spreadsheets and manual admin." },
+  { title: "Client portals", href: "/services/web-application-development/", body: "Secure places for customers to log in, see their records and get things done." },
+  { title: "Automation", href: "/services/business-process-automation/", body: "Integrations between the tools you already use, so work moves without copy and paste." },
+  { title: "SaaS products", href: "/services/saas-development/", body: "Complete products, from first prototype to launch and beyond." },
 ];
 
 const fadeUp = {
@@ -41,13 +41,18 @@ export default function Home() {
 
       <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-4 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60 sm:px-8">
         <a href="/" className="transition-colors hover:text-foreground">Joefergraphy Ltd</a>
-        <a
-          href="/contact"
-          className="transition-colors hover:text-foreground"
-          onClick={() => trackButtonClick("Header contact link", "Header")}
-        >
-          Contact
-        </a>
+        <nav aria-label="Main" className="flex items-center gap-6">
+          <a href="/services/" className="transition-colors hover:text-foreground">
+            Services
+          </a>
+          <a
+            href="/contact"
+            className="transition-colors hover:text-foreground"
+            onClick={() => trackButtonClick("Header contact link", "Header")}
+          >
+            Contact
+          </a>
+        </nav>
       </header>
 
       <main className="relative z-10">
@@ -153,7 +158,11 @@ export default function Home() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.15 + i * 0.08, duration: 0.6 }}
                 >
-                  <h3 className="text-base font-medium">{item.title}</h3>
+                  <h3 className="text-base font-medium">
+                    <a href={item.href} className="underline decoration-foreground/0 underline-offset-4 transition-colors hover:decoration-foreground/60">
+                      {item.title}
+                    </a>
+                  </h3>
                   <p className="mx-auto mt-2 max-w-[16rem] text-[13px] leading-relaxed text-foreground/65">{item.body}</p>
                 </motion.div>
               ))}
@@ -178,11 +187,11 @@ export default function Home() {
                 <FiArrowRight className="transition-transform group-hover:translate-x-0.5" />
               </a>
               <a
-                href="/contact"
+                href="/services/"
                 className="inline-flex items-center gap-3 border border-foreground/40 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors hover:border-foreground"
-                onClick={() => trackButtonClick("General enquiry", "Custom software section")}
+                onClick={() => trackButtonClick("All services", "Custom software section")}
               >
-                General enquiry
+                All services
               </a>
             </div>
           </motion.div>
@@ -201,6 +210,7 @@ export default function Home() {
 
           <footer className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-between gap-2 px-4 py-6 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/40 sm:flex-row sm:px-8">
             <span>&copy; {new Date().getFullYear()} Joefergraphy Limited</span>
+            <a href="/services/" className="transition-colors hover:text-foreground">Software development services</a>
             <a href="mailto:contact@joefergraphy.co.uk" className="normal-case tracking-normal transition-colors hover:text-foreground">
               contact@joefergraphy.co.uk
             </a>
