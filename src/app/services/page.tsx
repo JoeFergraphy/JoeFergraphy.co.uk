@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { processSteps, serviceUrl, services, SITE_URL } from "@/content/services";
+import { processSteps, serviceUrl, services, SHARE_IMAGE, SITE_URL } from "@/content/services";
 import { JsonLd, PageBackdrop, SiteFooter, SiteHeader } from "@/components/SiteChrome";
 
 const title = "Specialist Software Development Services UK";
@@ -24,8 +24,9 @@ export const metadata: Metadata = {
     description,
     siteName: "Joefergraphy Limited",
     locale: "en_GB",
+    images: [SHARE_IMAGE],
   },
-  twitter: { card: "summary_large_image", title: `${title} | Joefergraphy`, description },
+  twitter: { card: "summary_large_image", title: `${title} | Joefergraphy`, description, images: [SHARE_IMAGE.url] },
 };
 
 const label = "font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45";

@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-background text-foreground">
       {/* 3D scene fixed behind everything */}
-      <SignalScene className="fixed inset-0 z-0" />
+      <SignalScene className="scene-canvas fixed inset-x-0 top-0 z-0" />
 
       <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-4 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60 sm:px-8">
         <a href="/" className="transition-colors hover:text-foreground">Joefergraphy Ltd</a>

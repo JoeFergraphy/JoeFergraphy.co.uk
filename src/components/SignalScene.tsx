@@ -102,7 +102,8 @@ void main() {
 }
 `;
 
-const POINT_COUNT = 60000;
+// Fewer points on phones keeps scrolling smooth
+const pointCount = () => (window.innerWidth < 640 ? 38000 : 60000);
 
 // TenantTool brand blue, lifted slightly so the key reads on black
 const TENANTTOOL_BLUE = new THREE.Color("#4a8fe7").lerp(new THREE.Color("#ffffff"), 0.35);
@@ -123,13 +124,14 @@ const smoothstep = (x: number) => {
   return c * c * (3 - 2 * c);
 };
 
-// 1 when a section is centred in the viewport, easing to 0 away from it
-function sectionFocus(id: string) {
+// 1 when a section is centred in the viewport, easing to 0 away from it.
+// Takes a stable viewport height so a mobile address bar showing or hiding does not jolt it.
+function sectionFocus(id: string, viewH: number) {
   const section = document.getElementById(id);
   if (!section) return 0;
   const r = section.getBoundingClientRect();
-  const offset = Math.abs(r.top + r.height / 2 - window.innerHeight / 2);
-  return smoothstep(1.4 - (offset / window.innerHeight) * 1.8);
+  const offset = Math.abs(r.top + r.height / 2 - viewH / 2);
+  return smoothstep(1.4 - (offset / viewH) * 1.8);
 }
 
 export default function SignalScene({ className = "" }: { className?: string }) {
@@ -147,7 +149,7 @@ export default function SignalScene({ className = "" }: { className?: string }) 
     } catch {
       return; // No WebGL: the copy carries the page on its own
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 640 ? 1.5 : 2));
     renderer.setClearColor(0x000000, 0);
     renderer.domElement.style.cssText = "width:100%;height:100%;display:block";
     mount.appendChild(renderer.domElement);
@@ -160,6 +162,7 @@ export default function SignalScene({ className = "" }: { className?: string }) 
     scene.add(group);
 
     // Noise-displaced point sphere that morphs into a computer and a key
+    const POINT_COUNT = pointCount();
     const sphere = fibonacciSphere(POINT_COUNT, 1.5);
     const order = spatialOrder(sphere);
     const coreGeo = new THREE.BufferGeometry();
@@ -250,9 +253,18 @@ export default function SignalScene({ className = "" }: { className?: string }) 
       });
     }
 
+    // The canvas is sized to the large viewport (see .scene-canvas) so it does not change
+    // height as a mobile address bar moves; only a width change (such as rotation) resizes it.
+    let canvasW = 0;
+    let canvasH = 1;
+    let viewH = window.innerHeight;
     const resize = () => {
       const w = Math.max(1, mount.clientWidth);
       const h = Math.max(1, mount.clientHeight);
+      if (w === canvasW && Math.abs(h - canvasH) < 200) return;
+      canvasW = w;
+      canvasH = h;
+      viewH = window.innerHeight;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       // Pull back on narrow screens so the sphere is not cropped
@@ -293,9 +305,9 @@ export default function SignalScene({ className = "" }: { className?: string }) 
       // Time-based easing so morphs take the same time at any frame rate
       const rate = (perSecond: number) => (reduceMotion ? 1 : 1 - Math.exp(-perSecond * dt));
       const ease = rate(2.8);
-      computer += (sectionFocus("vision") - computer) * ease;
-      key += (sectionFocus("tenanttool") - key) * ease;
-      word += ((wordReady ? Math.max(sectionFocus("hero"), sectionFocus("outro")) : 0) - word) * rate(1.8);
+      computer += (sectionFocus("vision", viewH) - computer) * ease;
+      key += (sectionFocus("tenanttool", viewH) - key) * ease;
+      word += ((wordReady ? Math.max(sectionFocus("hero", viewH), sectionFocus("outro", viewH)) : 0) - word) * rate(1.8);
       const morph = Math.min(1, computer + key + word);
       coreUniforms.uComputer.value = computer;
       coreUniforms.uKey.value = key;
@@ -303,17 +315,18 @@ export default function SignalScene({ className = "" }: { className?: string }) 
 
       // Size and place the wordmark to sit just behind the heading at its resting position
       const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
-      const worldPerPx = (halfH * 2) / window.innerHeight;
+      // Positions are worked out against the canvas, which starts at the top of the viewport
+      const worldPerPx = (halfH * 2) / canvasH;
       if (heading) {
         const rect = heading.getBoundingClientRect();
         const fontSize = parseFloat(getComputedStyle(heading).fontSize);
         coreUniforms.uWordScale.value = wordWidthPerEm * fontSize * worldPerPx * 1.04;
-        coreUniforms.uWordY.value = -(rect.top + scrollY + rect.height / 2 - window.innerHeight / 2) * worldPerPx;
+        coreUniforms.uWordY.value = -(rect.top + scrollY + rect.height / 2 - canvasH / 2) * worldPerPx;
       }
       coreUniforms.uSolid.value = morph;
 
       // Ease the colour towards the scroll position so it never jumps
-      const maxScroll = Math.max(1, root.scrollHeight - window.innerHeight);
+      const maxScroll = Math.max(1, root.scrollHeight - viewH);
       colourAt(scrollY / maxScroll, targetColour).lerp(TENANTTOOL_BLUE, key);
       const colour = coreUniforms.uColor.value;
       colour.lerp(targetColour, rate(3));

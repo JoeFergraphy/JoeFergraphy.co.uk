@@ -11,19 +11,11 @@ export const metadata: Metadata = {
     title: 'Contact Us | Joefergraphy Limited',
     description: 'Contact Joefergraphy about custom software development, SaaS products or TenantTool. UK software company.',
     url: 'https://joefergraphy.co.uk/contact/',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Joefergraphy Limited - Contact Us',
-      }
-    ],
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Contact Us | Joefergraphy Limited',
     description: 'Contact Joefergraphy about custom software development, SaaS products or TenantTool. UK software company.',
-    images: ['/og-image.jpg'],
   },
 };
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getService, processSteps, serviceUrl, services, SITE_URL } from "@/content/services";
+import { getService, processSteps, serviceUrl, services, SHARE_IMAGE, SITE_URL } from "@/content/services";
 import { JsonLd, PageBackdrop, SiteFooter, SiteHeader } from "@/components/SiteChrome";
 
 export const dynamicParams = false;
@@ -27,11 +27,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: service.metaDescription,
       siteName: "Joefergraphy Limited",
       locale: "en_GB",
+      images: [SHARE_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title: `${service.metaTitle} | Joefergraphy`,
       description: service.metaDescription,
+      images: [SHARE_IMAGE.url],
     },
   };
 }

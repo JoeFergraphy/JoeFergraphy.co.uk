@@ -1,7 +1,7 @@
 {
   "name": "Joefergraphy Limited",
   "short_name": "Joefergraphy",
-  "description": "Professional web development solutions",
+  "description": "UK software company. Specialist software development and makers of TenantTool.",
   "icons": [
     {
       "src": "/favicon/favicon-16x16.png",
@@ -21,7 +21,8 @@
     {
       "src": "/favicon/JF-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "theme_color": "#000000",

@@ -23,6 +23,14 @@ export interface Service {
 
 export const SITE_URL = "https://joefergraphy.co.uk";
 
+// Pages that set their own openGraph lose the inherited share image, so they pass this explicitly
+export const SHARE_IMAGE = {
+  url: "/opengraph-image.png",
+  width: 1200,
+  height: 630,
+  alt: "Joefergraphy Limited: gold point-cloud wordmark.",
+};
+
 export const services: Service[] = [
   {
     slug: "custom-software-development",
