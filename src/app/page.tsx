@@ -39,21 +39,6 @@ export default function Home() {
       {/* 3D scene fixed behind everything */}
       <SignalScene className="scene-canvas fixed inset-x-0 top-0 z-0" />
 
-      <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-4 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60 sm:px-8">
-        <a href="/" className="transition-colors hover:text-foreground">Joefergraphy Ltd</a>
-        <nav aria-label="Main" className="flex items-center gap-6">
-          <a href="/services/" className="transition-colors hover:text-foreground">
-            Services
-          </a>
-          <a
-            href="/contact"
-            className="transition-colors hover:text-foreground"
-            onClick={() => trackButtonClick("Header contact link", "Header")}
-          >
-            Contact
-          </a>
-        </nav>
-      </header>
 
       <main className="relative z-10">
         {/* Hero */}
@@ -210,10 +195,6 @@ export default function Home() {
 
           <footer className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-between gap-2 px-4 py-6 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/40 sm:flex-row sm:px-8">
             <span>&copy; {new Date().getFullYear()} Joefergraphy Limited</span>
-            <a href="/services/" className="transition-colors hover:text-foreground">Software development services</a>
-            <a href="mailto:contact@joefergraphy.co.uk" className="normal-case tracking-normal transition-colors hover:text-foreground">
-              contact@joefergraphy.co.uk
-            </a>
           </footer>
         </section>
       </main>
