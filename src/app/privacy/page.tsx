@@ -31,8 +31,10 @@ const sections: { heading: string; body: React.ReactNode }[] = [
     body: (
       <>
         <p>
-          This website is run by Joefergraphy Limited, a company registered in England and Wales (&ldquo;we&rdquo;,
-          &ldquo;us&rdquo;). We are the data controller for personal data collected through joefergraphy.co.uk.
+          This website is run by Joefergraphy Limited, a company registered in England and Wales under company number
+          16271607 (&ldquo;we&rdquo;, &ldquo;us&rdquo;). We are the data controller for personal data collected
+          through joefergraphy.co.uk, and we are registered with the Information Commissioner&rsquo;s Office under
+          registration number ZC278084.
         </p>
         <p>
           For anything relating to this policy or your data, email{" "}
