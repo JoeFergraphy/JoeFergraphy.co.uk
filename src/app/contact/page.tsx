@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowRight, FiCheck, FiX } from 'react-icons/fi';
-import { trackPageView, trackFormInteraction, trackButtonClick } from '@/utils/analytics';
 import Scramble from '@/components/Scramble';
 
 const ENQUIRY_TYPES = [
@@ -29,9 +28,6 @@ export default function ContactForm() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    // Track contact page view
-    trackPageView("Contact Form");
-
     // Links such as /contact?enquiry=custom preselect the enquiry type
     const requested = new URLSearchParams(window.location.search).get('enquiry');
     if (ENQUIRY_TYPES.some((t) => t.id === requested)) setEnquiry(requested as EnquiryType);
@@ -39,12 +35,7 @@ export default function ContactForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
-    // Track first interaction with each field
-    if (!formData[name as keyof typeof formData] && value) {
-      trackFormInteraction('Contact Form', `started filling ${name} field`);
-    }
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -53,10 +44,7 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Track form submission attempt  
-    trackFormInteraction('Contact Form', 'submitted');
-    
+
     setIsSubmitting(true);
     setSubmitStatus(null);
     
@@ -179,10 +167,7 @@ export default function ContactForm() {
               <h3 className="font-mono text-sm uppercase tracking-[0.3em] mb-2">Message sent</h3>
               <p className="text-foreground/60 text-sm mb-6">We&apos;ll be in touch shortly.</p>
               <button 
-                onClick={() => {
-                  trackButtonClick('Send another message', 'Contact form reset');
-                  setSubmitStatus(null);
-                }}
+                onClick={() => setSubmitStatus(null)}
                 className="border border-foreground/30 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors hover:border-foreground hover:text-foreground"
               >
                 Send another message
@@ -204,10 +189,7 @@ export default function ContactForm() {
                       key={type.id}
                       type="button"
                       aria-pressed={enquiry === type.id}
-                      onClick={() => {
-                        setEnquiry(type.id);
-                        trackFormInteraction('Contact Form', `chose ${type.label} enquiry`);
-                      }}
+                      onClick={() => setEnquiry(type.id)}
                       className={`border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
                         enquiry === type.id
                           ? 'border-foreground bg-foreground text-black'
@@ -317,8 +299,11 @@ export default function ContactForm() {
               <a 
                 href="mailto:contact@joefergraphy.co.uk" 
                 className="text-foreground/80 normal-case tracking-normal hover:text-foreground transition-colors"
-                onClick={() => trackButtonClick('Email contact link', 'Direct email: contact@joefergraphy.co.uk')}
               >contact@joefergraphy.co.uk</a>
+            </p>
+            <p className="mt-3 text-xs text-foreground/40">
+              We use your details only to reply. See our{' '}
+              <a href="/privacy/" className="underline underline-offset-4 hover:text-foreground transition-colors">privacy policy</a>.
             </p>
           </motion.div>
           </div>

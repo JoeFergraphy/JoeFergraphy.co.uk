@@ -50,9 +50,10 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
-      <p className="mx-auto mt-12 max-w-5xl font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/35">
-        &copy; {new Date().getFullYear()} Joefergraphy Limited
-      </p>
+      <div className="mx-auto mt-12 flex max-w-5xl items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/35">
+        <p>&copy; {new Date().getFullYear()} Joefergraphy Limited</p>
+        <a href="/privacy/" className="transition-colors hover:text-foreground">Privacy</a>
+      </div>
     </footer>
   );
 }

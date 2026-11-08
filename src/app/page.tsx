@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiArrowUpRight, FiArrowRight } from "react-icons/fi";
 import SignalScene from "@/components/SignalScene";
 import Scramble from "@/components/Scramble";
-import { trackPageView, trackButtonClick } from "@/utils/analytics";
 
 const TENANTTOOL_URL = "https://tenanttool.co.uk/";
 
@@ -30,10 +28,6 @@ const fadeUp = {
 };
 
 export default function Home() {
-  useEffect(() => {
-    trackPageView("Homepage");
-  }, []);
-
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-background text-foreground">
       {/* 3D scene fixed behind everything */}
@@ -69,7 +63,6 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2.4, duration: 1 }}
-            onClick={() => trackButtonClick("Hero scroll prompt", "Scroll to vision")}
           >
             Scroll
           </motion.a>
@@ -115,7 +108,6 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
             className="legible group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-foreground/70 transition-colors hover:text-foreground"
-            onClick={() => trackButtonClick("Visit TenantTool", `External link: ${TENANTTOOL_URL}`)}
           >
             tenanttool.co.uk
             <FiArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -166,7 +158,6 @@ export default function Home() {
               <a
                 href="/contact?enquiry=custom"
                 className="group inline-flex items-center gap-3 bg-foreground px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-black [text-shadow:none] transition-colors hover:bg-white/80"
-                onClick={() => trackButtonClick("Request custom software", "Custom software section")}
               >
                 Request custom software
                 <FiArrowRight className="transition-transform group-hover:translate-x-0.5" />
@@ -174,7 +165,6 @@ export default function Home() {
               <a
                 href="/services/"
                 className="inline-flex items-center gap-3 border border-foreground/40 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors hover:border-foreground"
-                onClick={() => trackButtonClick("All services", "Custom software section")}
               >
                 All services
               </a>
@@ -195,6 +185,7 @@ export default function Home() {
 
           <footer className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-between gap-2 px-4 py-6 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/40 sm:flex-row sm:px-8">
             <span>&copy; {new Date().getFullYear()} Joefergraphy Limited</span>
+            <a href="/privacy/" className="transition-colors hover:text-foreground">Privacy</a>
           </footer>
         </section>
       </main>
